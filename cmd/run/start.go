@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/logandavies181/tfd/cmd/config"
+	"github.com/logandavies181/tfd/cmd/plan"
 	"github.com/logandavies181/tfd/cmd/workspace"
 
 	"github.com/hashicorp/go-tfe"
@@ -74,37 +75,53 @@ func runStart(cmd *cobra.Command, _ []string) error {
 		},
 	)
 	if err != nil {
-		fmt.Printf("%s\n", err)
 		return err
 	}
 
-	// Wait for plan
-	if cfg.Watch || cfg.AutoApply {
-		// check if there's a queue
-		err := waitForQueueStatus(cfg.Ctx, cfg.Client, cfg.Org, workspace.Name, r.ID)
-		if err != nil {
-			return err
-		}
+	fmt.Println(r.ID)
 
-		fmt.Println("Plan running. Waiting for it to finish..")
-		err = watchRun(cfg.Ctx, cfg.Client, r.ID)
+	if cfg.Watch || cfg.AutoApply {
+		err = watchAndAutoApplyRun(cfg.Ctx, cfg.Client, cfg.Org, workspace.Name, r, cfg.AutoApply)
 		if err != nil {
 			return err
 		}
 	}
 
-	if cfg.AutoApply {
+	return nil
+}
+
+// watchAndAutoApplyRun waits for a run to plan and optionally auto-applies it, waiting for the apply to finish if so.
+// It will return an error if it detects a queue on the workspace
+func watchAndAutoApplyRun(ctx context.Context, client *tfe.Client, org, workspaceName string, r *tfe.Run, autoApply bool) error {
+	// check if there's a queue
+	err := waitForQueueStatus(ctx, client, org, workspaceName, r.ID)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("Plan %s running. Waiting for it to finish..\n", r.Plan.ID)
+	err = plan.WatchPlan(ctx, client, r.Plan.ID)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(plan.FormatResourceChanges(r.Plan))
+
+	if autoApply {
 
 		time.Sleep(1*time.Second)
 
 		for {
-			r, err := cfg.Client.Runs.Read(cfg.Ctx, r.ID)
+			r, err := client.Runs.Read(ctx, r.ID)
 			if err != nil {
 				return err
 			}
 
-			if r.Actions.IsConfirmable {
-				err = cfg.Client.Runs.Apply(cfg.Ctx, r.ID, tfe.RunApplyOptions{})
+			if isRunFinished(r) {
+				fmt.Printf("Run %s finished with status: %s\n", r.ID, r.Status)
+				return nil
+			} else if r.Actions.IsConfirmable {
+				err = client.Runs.Apply(ctx, r.ID, tfe.RunApplyOptions{})
 				if err != nil {
 					return err
 				}
@@ -117,12 +134,12 @@ func runStart(cmd *cobra.Command, _ []string) error {
 		fmt.Println("Run confirmed")
 
 		fmt.Println("Waiting for apply..")
-		watchRun(cfg.Ctx, cfg.Client, r.ID)
+		watchRun(ctx, client, r.ID)
 		if err != nil {
 			return err
 		}
 
-		r, err := cfg.Client.Runs.Read(cfg.Ctx, r.ID)
+		r, err := client.Runs.Read(ctx, r.ID)
 		if err != nil {
 			return err
 		}
@@ -130,7 +147,7 @@ func runStart(cmd *cobra.Command, _ []string) error {
 		if isRunFinished(r) {
 			fmt.Println("Run finished")
 
-			fmt.Println(r.Apply.LogReadURL)
+			fmt.Println(formatResourceChanges(r.Apply))
 		}
 	}
 
@@ -159,7 +176,6 @@ func isRunFinished(r *tfe.Run) bool {
 		tfe.RunCanceled,
 		tfe.RunDiscarded,
 		tfe.RunErrored,
-		tfe.RunPlanned,
 		tfe.RunPlannedAndFinished:
 
 		return true

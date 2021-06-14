@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/logandavies181/tfd/cmd/config"
 	"github.com/logandavies181/tfd/cmd/git"
 	"github.com/logandavies181/tfd/cmd/workspace"
@@ -79,6 +81,8 @@ func uploadConfig(cmd *cobra.Command, _ []string) error {
 	if err != nil {
 		return err
 	}
+
+	fmt.Println(cv.ID)
 
 	return nil
 }

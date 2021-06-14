@@ -1,6 +1,8 @@
 package run
 
 import (
+	"fmt"
+
 	"github.com/logandavies181/tfd/cmd/config"
 	"github.com/logandavies181/tfd/cmd/workspace"
 
@@ -20,6 +22,7 @@ var destroyRunCmd = &cobra.Command{
 func init() {
 	RunCmd.AddCommand(destroyRunCmd)
 
+	destroyRunCmd.Flags().BoolP("auto-apply", "a", false, "Automatically apply the plan once finished")
 	destroyRunCmd.Flags().BoolP("watch", "", false, "Wait for the run to finish")
 	destroyRunCmd.Flags().StringP("workspace", "w", "", "Terraform Cloud workspace to interact with")
 }
@@ -27,6 +30,7 @@ func init() {
 type destroyRunConfig struct {
 	*config.GlobalConfig
 
+	AutoApply bool `mapstructure:"auto-apply"`
 	Watch     bool
 	Workspace string
 }
@@ -63,7 +67,7 @@ func destroyRun(cmd *cobra.Command, _ []string) error {
 
 	isDestroy := true
 
-	_, err = cfg.Client.Runs.Create(
+	r, err := cfg.Client.Runs.Create(
 		cfg.Ctx,
 		tfe.RunCreateOptions{
 			IsDestroy: &isDestroy,
@@ -72,6 +76,15 @@ func destroyRun(cmd *cobra.Command, _ []string) error {
 	)
 	if err != nil {
 		return err
+	}
+
+	fmt.Println(r.ID)
+
+	if cfg.Watch || cfg.AutoApply {
+		err = watchAndAutoApplyRun(cfg.Ctx, cfg.Client, cfg.Org, workspace.Name, r, cfg.AutoApply)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

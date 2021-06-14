@@ -93,5 +93,7 @@ func applyRun(cmd *cobra.Command, _ []string) error {
 		return err
 	}
 
+	fmt.Println(confirmableRunsList[0])
+
 	return nil
 }

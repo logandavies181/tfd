@@ -27,3 +27,11 @@ func getCurrentRun(ctx context.Context, client *tfe.Client, org, workspaceName s
 		return "", fmt.Errorf("Workspace %s has no current run", workspaceName)
 	}
 }
+
+func formatResourceChanges(a *tfe.Apply) string {
+	return fmt.Sprintf(
+		"Apply complete! Resources: %d added, %d changed, %d destroyed.",
+		a.ResourceAdditions,
+		a.ResourceChanges,
+		a.ResourceDestructions)
+}
