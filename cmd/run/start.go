@@ -109,7 +109,7 @@ func watchAndAutoApplyRun(ctx context.Context, client *tfe.Client, org, workspac
 
 	if autoApply {
 
-		time.Sleep(1*time.Second)
+		time.Sleep(1 * time.Second)
 
 		for {
 			r, err := client.Runs.Read(ctx, r.ID)
@@ -128,7 +128,7 @@ func watchAndAutoApplyRun(ctx context.Context, client *tfe.Client, org, workspac
 			} else {
 				break
 			}
-			time.Sleep(5*time.Second)
+			time.Sleep(5 * time.Second)
 		}
 
 		fmt.Println("Run confirmed")
@@ -165,7 +165,7 @@ func watchRun(ctx context.Context, client *tfe.Client, runId string) error {
 		if isRunFinished(r) {
 			return nil
 		} else {
-			time.Sleep(10*time.Second)
+			time.Sleep(10 * time.Second)
 		}
 	}
 }
@@ -199,16 +199,16 @@ func waitForQueueStatus(ctx context.Context, client *tfe.Client, org, workspaceN
 		}
 
 		if workspace.CurrentRun == nil {
-			time.Sleep(5*time.Second)
+			time.Sleep(5 * time.Second)
 		} else if workspace.CurrentRun.ID != r.ID {
 			if !isRunFinished(workspace.CurrentRun) {
 				// Current run is someone else. Don't wait for queue, just exit
 				return fmt.Errorf("Workspace is currently locked by %s. "+
-					"Complete or discard that run before attempting to queue", 
+					"Complete or discard that run before attempting to queue",
 					workspace.CurrentRun.ID)
 			} else {
 				// Current run isn't running and isn't us. Wait for Terraform Cloud to catch up
-				time.Sleep(5*time.Second)
+				time.Sleep(5 * time.Second)
 			}
 		} else {
 			// We're the current run. Return now

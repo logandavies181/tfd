@@ -5,9 +5,9 @@ import (
 
 	"github.com/logandavies181/tfd/cmd/config"
 
-	"gopkg.in/yaml.v3"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"gopkg.in/yaml.v3"
 )
 
 var readRuncmd = &cobra.Command{
@@ -28,7 +28,7 @@ func init() {
 type readRunConfig struct {
 	*config.GlobalConfig
 
-	RunId string `mapstructure:"run-id"`
+	RunId     string `mapstructure:"run-id"`
 	Workspace string
 }
 

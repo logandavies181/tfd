@@ -52,7 +52,7 @@ func initConfig() {
 		// Find home directory.
 		home, err := homedir.Dir()
 		if err != nil {
-			fmt.Println(err)
+			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
 		}
 
@@ -63,4 +63,10 @@ func initConfig() {
 
 	viper.AutomaticEnv() // read in environment variables that match
 	viper.SetEnvPrefix("TFD")
+
+	err := viper.ReadInConfig()
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
 }

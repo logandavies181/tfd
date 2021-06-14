@@ -82,12 +82,12 @@ func applyRun(cmd *cobra.Command, _ []string) error {
 		return fmt.Errorf("No confirmable runs on workspace %s", cfg.Workspace)
 	} else if len(confirmableRunsList) > 1 {
 		return fmt.Errorf(
-			"%d confirmable runs on workspace %s. Unsure how to proceed", 
-			len(confirmableRunsList), 
+			"%d confirmable runs on workspace %s. Unsure how to proceed",
+			len(confirmableRunsList),
 			cfg.Workspace)
 	}
 
-	// confirm the run 
+	// confirm the run
 	err = cfg.Client.Runs.Apply(cfg.Ctx, confirmableRunsList[0], tfe.RunApplyOptions{})
 	if err != nil {
 		return err
