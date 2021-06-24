@@ -66,7 +66,12 @@ func initConfig() {
 
 	err := viper.ReadInConfig()
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
+		switch err.(type) {
+		case viper.ConfigFileNotFoundError:
+			// No config file, no big deal
+		default:
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
 	}
 }
