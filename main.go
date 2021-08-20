@@ -25,7 +25,7 @@ func main() {
 			buildMeta = debugInfo.Main.Sum
 		}
 
-		semver = "0.0.0+"+buildMeta
+		semver = "0.0.0+" + buildMeta
 	}
 
 	cmd.Execute(semver)

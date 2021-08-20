@@ -26,15 +26,15 @@ func init() {
 
 	uploadConfigCmd.Flags().StringP("path", "p", "", "Path to Terraform Directory")
 	uploadConfigCmd.Flags().StringP("workspace", "w", "", "Terraform Cloud workspace to upload to")
-	uploadConfigCmd.Flags().BoolP("no-update-workdingir", "d", false, 
+	uploadConfigCmd.Flags().BoolP("no-update-workdingir", "d", false,
 		"Skip updating the Terraform Working Directory for the workspace")
 }
 
 type uploadConfigConfig struct {
 	*config.GlobalConfig
 
-	Path      string
-	Workspace string
+	Path               string
+	Workspace          string
 	NoUpdateWorkingDir bool
 }
 
@@ -81,7 +81,7 @@ func uploadConfig(cmd *cobra.Command, _ []string) error {
 		return err
 	}
 
-	if !cfg.NoUpdateWorkingDir{
+	if !cfg.NoUpdateWorkingDir {
 		absPath, err := filepath.Abs(cfg.Path)
 		if err != nil {
 			return err
@@ -106,4 +106,3 @@ func uploadConfig(cmd *cobra.Command, _ []string) error {
 
 	return nil
 }
-
