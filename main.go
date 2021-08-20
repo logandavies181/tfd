@@ -12,23 +12,18 @@ var semver string
 
 func main() {
 	debugInfo, ok := debug.ReadBuildInfo()
-	if ok {
-		fmt.Println(debugInfo.Main.Sum)
-	}
 	if semver == "" {
 		if !ok {
 			fmt.Fprintln(os.Stderr, "Could not determine build info. Your tfd version is corrupt")
 			os.Exit(1)
 		}
 
-		var buildMeta string
-		if debugInfo.Main.Sum == "" {
-			buildMeta = "dev"
-		} else {
-			buildMeta = debugInfo.Main.Sum
+		debugVersion := debugInfo.Main.Version
+		if debugVersion == "(devel)" {
+			debugVersion = "devel"
 		}
 
-		semver = "0.0.0+" + buildMeta
+		semver = "0.0.0+"+debugVersion
 	}
 
 	cmd.Execute(semver)
