@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"path/filepath"
 
 	"github.com/logandavies181/tfd/cmd/config"
 	"github.com/logandavies181/tfd/cmd/git"
@@ -25,6 +26,8 @@ func init() {
 
 	uploadConfigCmd.Flags().StringP("path", "p", "", "Path to Terraform Directory")
 	uploadConfigCmd.Flags().StringP("workspace", "w", "", "Terraform Cloud workspace to upload to")
+	uploadConfigCmd.Flags().BoolP("no-update-workdingir", "d", false, 
+		"Skip updating the Terraform Working Directory for the workspace")
 }
 
 type uploadConfigConfig struct {
@@ -32,6 +35,7 @@ type uploadConfigConfig struct {
 
 	Path      string
 	Workspace string
+	NoUpdateWorkingDir bool
 }
 
 func getApiRunConfig(cmd *cobra.Command) (*uploadConfigConfig, error) {
@@ -77,6 +81,22 @@ func uploadConfig(cmd *cobra.Command, _ []string) error {
 		return err
 	}
 
+	if !cfg.NoUpdateWorkingDir{
+		absPath, err := filepath.Abs(cfg.Path)
+		if err != nil {
+			return err
+		}
+
+		workingDir, err := filepath.Rel(pathToRoot, absPath)
+		if err != nil {
+			return err
+		}
+
+		cfg.Client.Workspaces.Update(cfg.Ctx, cfg.Org, cfg.Workspace, tfe.WorkspaceUpdateOptions{
+			WorkingDirectory: &workingDir,
+		})
+	}
+
 	err = cfg.Client.ConfigurationVersions.Upload(cfg.Ctx, cv.UploadURL, pathToRoot)
 	if err != nil {
 		return err
@@ -86,3 +106,4 @@ func uploadConfig(cmd *cobra.Command, _ []string) error {
 
 	return nil
 }
+
