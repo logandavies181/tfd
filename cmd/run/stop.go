@@ -72,7 +72,7 @@ func stopRun(cmd *cobra.Command, _ []string) error {
 	}
 
 	waitCounter := 0
-	errChan := make(chan(error), len(runList.Items))
+	errChan := make(chan (error), len(runList.Items))
 	var stopList []string
 
 	// Cancel runs first, then discard runs
@@ -112,7 +112,7 @@ func stopRun(cmd *cobra.Command, _ []string) error {
 	return nil
 }
 
-func discardOrCancelRun(client *tfe.Client, ctx context.Context, runId string, errChan chan(error), action string) {
+func discardOrCancelRun(client *tfe.Client, ctx context.Context, runId string, errChan chan (error), action string) {
 	switch action {
 	case "Discard":
 		err := client.Runs.Discard(ctx, runId, tfe.RunDiscardOptions{})

@@ -1,6 +1,6 @@
 package plan
 
-import(
+import (
 	"context"
 	"fmt"
 	"time"
@@ -15,6 +15,7 @@ func FormatResourceChanges(p *tfe.Plan) string {
 		p.ResourceChanges,
 		p.ResourceDestructions)
 }
+
 // watchRun periodically checks the Run and returns when it is a finished, errored, or waiting for confirmation
 func WatchPlan(ctx context.Context, client *tfe.Client, planId string) error {
 	for {
@@ -27,7 +28,7 @@ func WatchPlan(ctx context.Context, client *tfe.Client, planId string) error {
 			// TODO: handle failed states
 			return nil
 		} else {
-			time.Sleep(10*time.Second)
+			time.Sleep(10 * time.Second)
 		}
 	}
 }
