@@ -8,23 +8,17 @@ import (
 	"github.com/logandavies181/tfd/cmd"
 )
 
-var semver string
-
 func main() {
 	debugInfo, ok := debug.ReadBuildInfo()
-	if semver == "" {
-		if !ok {
-			fmt.Fprintln(os.Stderr, "Could not determine build info. Your tfd version is corrupt")
-			os.Exit(1)
-		}
-
-		debugVersion := debugInfo.Main.Version
-		if debugVersion == "(devel)" {
-			debugVersion = "devel"
-		}
-
-		semver = "0.0.0+"+debugVersion
+	if !ok {
+		fmt.Fprintln(os.Stderr, "Could not determine build info. Your tfd version is corrupt")
+		os.Exit(1)
 	}
 
-	cmd.Execute(semver)
+	version := debugInfo.Main.Version
+	if version == "(devel)" {
+		version = "v0.0.0+devel"
+	}
+
+	cmd.Execute(version)
 }
