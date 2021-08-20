@@ -13,7 +13,7 @@ import (
 
 var applyRunCmd = &cobra.Command{
 	Use:          "apply",
-	Aliases:      []string{"a"},
+	Aliases:      []string{"a", "approve"},
 	Short:        "Apply a run",
 	SilenceUsage: true,
 	RunE:         applyRun,
