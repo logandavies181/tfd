@@ -12,6 +12,9 @@ var semver string
 
 func main() {
 	debugInfo, ok := debug.ReadBuildInfo()
+	if ok {
+		fmt.Println(debugInfo.Main.Sum)
+	}
 	if semver == "" {
 		if !ok {
 			fmt.Fprintln(os.Stderr, "Could not determine build info. Your tfd version is corrupt")
