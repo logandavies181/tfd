@@ -41,5 +41,7 @@ be prefixed with "TFD_"
 ## Install
 
 ```sh
-go get github.com/logandavies181/tfd@v1.0.0
+go get github.com/logandavies181/tfd@v1.0.1
 ```
+
+Or check out [releases](https://github.com/logandavies181/tfd/releases)
