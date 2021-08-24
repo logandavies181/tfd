@@ -12,7 +12,7 @@ import (
 var version string
 
 func main() {
-	cmd.Execute(buildVersion())
+	cmd.Execute(buildVersion(version))
 }
 
 // buildVersion checks if version has been set at build time, otherwise uses debug.ReadBuildInfo to infer a tag.
@@ -20,7 +20,7 @@ func main() {
 // Locally compiled - Main.Version = "devel"; return "0.0.0+devel"
 // go get tfd@<some git hash> - Main.Version = "0.0.0+v0.0.0-<timestamp>-<short_hash>"; return 0.0.0-<timestamp>-<short_hash>
 // go get tfd@<tag> - Main.Version = "0.0.0-v<tag>"; return "<tag>"
-func buildVersion() string {
+func buildVersion(version string) string {
 	if version == "" {
 		debugInfo, ok := debug.ReadBuildInfo()
 		if !ok {
@@ -28,7 +28,7 @@ func buildVersion() string {
 			os.Exit(1)
 		}
 
-		version := debugInfo.Main.Version
+		version = debugInfo.Main.Version
 		if version == "(devel)" {
 			return "0.0.0+devel"
 		}
