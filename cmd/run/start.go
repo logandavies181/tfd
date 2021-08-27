@@ -93,19 +93,40 @@ func runStart(cmd *cobra.Command, _ []string) error {
 // watchAndAutoApplyRun waits for a run to plan and optionally auto-applies it, waiting for the apply to finish if so.
 // It will return an error if it detects a queue on the workspace
 func watchAndAutoApplyRun(ctx context.Context, client *tfe.Client, org, workspaceName string, r *tfe.Run, autoApply bool) error {
+	if r == nil {
+		return fmt.Errorf("Fatal: Run is nil")
+	}
+
 	// check if there's a queue
 	err := waitForQueueStatus(ctx, client, org, workspaceName, r.ID)
 	if err != nil {
 		return err
 	}
 
-	fmt.Printf("Plan %s running. Waiting for it to finish..\n", r.Plan.ID)
-	err = plan.WatchPlan(ctx, client, r.Plan.ID)
+	// r.Plan seems to be nil when we get it from the current workspace??
+	var planId string
+	if r.Plan == nil {
+		run, err := client.Runs.Read(ctx, r.ID)
+		if err != nil {
+			return err
+		}
+
+		planId = run.Plan.ID
+	} else {
+		planId = r.Plan.ID
+	}
+	fmt.Printf("Plan %s running. Waiting for it to finish..\n", planId)
+
+	err = plan.WatchPlan(ctx, client, planId)
 	if err != nil {
 		return err
 	}
 
-	fmt.Println(plan.FormatResourceChanges(r.Plan))
+	p, err := client.Plans.Read(ctx, planId)
+	if err != nil {
+		return err
+	}
+	fmt.Println(plan.FormatResourceChanges(p))
 
 	if autoApply {
 
@@ -125,6 +146,8 @@ func watchAndAutoApplyRun(ctx context.Context, client *tfe.Client, org, workspac
 				if err != nil {
 					return err
 				}
+			} else if isRunWaiting(r) {
+				break
 			} else {
 				break
 			}
@@ -147,7 +170,12 @@ func watchAndAutoApplyRun(ctx context.Context, client *tfe.Client, org, workspac
 		if isRunFinished(r) {
 			fmt.Println("Run finished")
 
-			fmt.Println(formatResourceChanges(r.Apply))
+			// Try getting Apply directly instead of using relation.
+			appl, err := client.Applies.Read(ctx, r.Apply.ID)
+			if err != nil {
+				return err
+			}
+			fmt.Println(formatResourceChanges(appl))
 		}
 	}
 
@@ -184,10 +212,34 @@ func isRunFinished(r *tfe.Run) bool {
 	}
 }
 
+func isRunWaiting(r *tfe.Run) bool {
+	switch r.Status {
+	case tfe.RunApplyQueued,
+		tfe.RunApplying,
+		tfe.RunConfirmed,
+		tfe.RunCostEstimated,
+		tfe.RunCostEstimating,
+		tfe.RunPending,
+		tfe.RunPolicyChecked,
+		tfe.RunPolicyChecking,
+		tfe.RunPolicyOverride,
+		tfe.RunPolicySoftFailed:
+
+		return true
+	default:
+		return false
+	}
+}
+
 // waitForQueueStatus periodically checks workspace.CurrentRun and returns once the current run is active. Err will be
 // nil if the current run is the active one and non-nil if it is some other run
 func waitForQueueStatus(ctx context.Context, client *tfe.Client, org, workspaceName, runId string) error {
 	for {
+		err := waitForWorkspaceToHaveCurrentRun(ctx, client, org, workspaceName)
+		if err != nil {
+			return err
+		}
+
 		workspace, err := client.Workspaces.Read(ctx, org, workspaceName)
 		if err != nil {
 			return err
@@ -198,9 +250,7 @@ func waitForQueueStatus(ctx context.Context, client *tfe.Client, org, workspaceN
 			return err
 		}
 
-		if workspace.CurrentRun == nil {
-			time.Sleep(5 * time.Second)
-		} else if workspace.CurrentRun.ID != r.ID {
+		if workspace.CurrentRun.ID != r.ID {
 			if !isRunFinished(workspace.CurrentRun) {
 				// Current run is someone else. Don't wait for queue, just exit
 				return fmt.Errorf("Workspace is currently locked by %s. "+
@@ -212,6 +262,21 @@ func waitForQueueStatus(ctx context.Context, client *tfe.Client, org, workspaceN
 			}
 		} else {
 			// We're the current run. Return now
+			return nil
+		}
+	}
+}
+
+func waitForWorkspaceToHaveCurrentRun(ctx context.Context, client *tfe.Client, org, workspaceName string) error {
+	for {
+		workspace, err := client.Workspaces.Read(ctx, org, workspaceName)
+		if err != nil {
+			return err
+		}
+
+		if workspace.CurrentRun == nil {
+			time.Sleep(5 * time.Second)
+		} else {
 			return nil
 		}
 	}

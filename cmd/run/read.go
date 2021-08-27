@@ -12,7 +12,7 @@ import (
 
 var readRuncmd = &cobra.Command{
 	Use:          "read",
-	Aliases:      []string{"r"},
+	Aliases:      []string{"r", "status"},
 	Short:        "Read a run",
 	SilenceUsage: true,
 	RunE:         readRun,

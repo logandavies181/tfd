@@ -22,7 +22,7 @@ var applyRunCmd = &cobra.Command{
 func init() {
 	RunCmd.AddCommand(applyRunCmd)
 
-	applyRunCmd.Flags().BoolP("watch", "", false, "Wait for the run to finish")
+	applyRunCmd.Flags().BoolP("watch", "", false, "Watch and apply the current run")
 	applyRunCmd.Flags().StringP("workspace", "w", "", "Terraform Cloud workspace to interact with")
 }
 
@@ -61,6 +61,16 @@ func applyRun(cmd *cobra.Command, _ []string) error {
 	workspace, err := workspace.GetWorkspaceByName(*cfg.Client, cfg.Ctx, cfg.Org, cfg.Workspace)
 	if err != nil {
 		return err
+	}
+
+	if cfg.Watch {
+		err := waitForWorkspaceToHaveCurrentRun(cfg.Ctx, cfg.Client, cfg.Org, cfg.Workspace)
+		if err != nil {
+			return err
+		}
+
+		run := workspace.CurrentRun
+		return watchAndAutoApplyRun(cfg.Ctx, cfg.Client, cfg.Org, cfg.Workspace, run, true)
 	}
 
 	runList, err := cfg.Client.Runs.List(
