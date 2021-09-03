@@ -21,7 +21,7 @@ tfd upload-config --path /path/to/terraform/dir --workspace myworkspace
 tfd run start --workspace myworkspace
 
 # Start a run and auto approve it once it is ready 
-tfd run start --workspace myworkspace --auto-approve
+tfd run start --workspace myworkspace --auto-apply
 
 # Start a destroy run
 tfd run destroy --workspace myworkspace
