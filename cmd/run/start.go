@@ -146,8 +146,9 @@ func watchAndAutoApplyRun(ctx context.Context, client *tfe.Client, org, workspac
 				if err != nil {
 					return err
 				}
-			} else if isRunWaiting(r) {
-				break
+			} else if isRunWaitingBetweenPlanAndApplying(r) {
+				// spin again
+				continue
 			} else {
 				break
 			}
@@ -182,7 +183,7 @@ func watchAndAutoApplyRun(ctx context.Context, client *tfe.Client, org, workspac
 	return nil
 }
 
-// watchRun periodically checks the Run and returns when it is a finished, errored, or waiting for confirmation
+// watchRun periodically checks the Run and returns when it is finished, errored, or waiting for confirmation
 func watchRun(ctx context.Context, client *tfe.Client, runId string) error {
 	for {
 		r, err := client.Runs.Read(ctx, runId)
@@ -212,11 +213,9 @@ func isRunFinished(r *tfe.Run) bool {
 	}
 }
 
-func isRunWaiting(r *tfe.Run) bool {
+func isRunWaitingBetweenPlanAndApplying(r *tfe.Run) bool {
 	switch r.Status {
-	case tfe.RunApplyQueued,
-		tfe.RunApplying,
-		tfe.RunConfirmed,
+	case tfe.RunConfirmed,
 		tfe.RunCostEstimated,
 		tfe.RunCostEstimating,
 		tfe.RunPending,
