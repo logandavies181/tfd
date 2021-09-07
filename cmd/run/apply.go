@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/logandavies181/tfd/cmd/config"
-	"github.com/logandavies181/tfd/cmd/workspace"
 
 	"github.com/hashicorp/go-tfe"
 	"github.com/spf13/cobra"
@@ -58,7 +57,7 @@ func applyRun(cmd *cobra.Command, _ []string) error {
 		return err
 	}
 
-	workspace, err := workspace.GetWorkspaceByName(*cfg.Client, cfg.Ctx, cfg.Org, cfg.Workspace)
+	workspace, err := cfg.Client.Workspaces.Read(cfg.Ctx, cfg.Org, cfg.Workspace)
 	if err != nil {
 		return err
 	}
