@@ -28,12 +28,27 @@ func listWorkspaces(_ *cobra.Command, _ []string) error {
 		return err
 	}
 
-	workspaceList, err := cfg.Client.Workspaces.List(cfg.Ctx, cfg.Org, tfe.WorkspaceListOptions{})
-	if err != nil {
-		return err
+	var workspaces []*tfe.Workspace
+	pagination := &tfe.Pagination{
+		NextPage:   1,
+		TotalPages: -1,
 	}
+	for {
+		if pagination == nil || pagination.CurrentPage == pagination.TotalPages {
+			break
+		}
+		workspaceListResp, err := cfg.Client.Workspaces.List(cfg.Ctx, cfg.Org, tfe.WorkspaceListOptions{
+			ListOptions: tfe.ListOptions{
+				PageNumber: pagination.NextPage,
+			},
+		})
+		if err != nil {
+			return err
+		}
+		pagination = workspaceListResp.Pagination
 
-	workspaces := workspaceList.Items
+		workspaces = append(workspaces, workspaceListResp.Items...)
+	}
 
 	workspace.SortWorkspacesByName(workspaces)
 	for _, ws := range workspaces {
