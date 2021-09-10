@@ -18,7 +18,7 @@ var uploadConfigCmd = &cobra.Command{
 	Aliases:      []string{"uc"},
 	Short:        "Upload local Terraform files to Terraform Cloud",
 	SilenceUsage: true,
-	RunE:         func(_ *cobra.Command, _ []string) error{
+	RunE: func(_ *cobra.Command, _ []string) error {
 		baseConfig, err := flags.InitializeCmd()
 		if err != nil {
 			return err
@@ -27,8 +27,8 @@ var uploadConfigCmd = &cobra.Command{
 		config := &uploadConfigConfig{
 			Config: baseConfig,
 
-			Path: viper.GetString("path"),
-			Workspace: viper.GetString("workspace"),
+			Path:               viper.GetString("path"),
+			Workspace:          viper.GetString("workspace"),
 			NoUpdateWorkingDir: viper.GetBool("no-update-workingdir"),
 		}
 

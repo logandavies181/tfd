@@ -16,7 +16,7 @@ var readRuncmd = &cobra.Command{
 	Aliases:      []string{"r", "status"},
 	Short:        "Read a run",
 	SilenceUsage: true,
-	RunE:         func(cmd *cobra.Command, _ []string)error {
+	RunE: func(cmd *cobra.Command, _ []string) error {
 		baseConfig, err := flags.InitializeCmd()
 		if err != nil {
 			return err
@@ -25,7 +25,7 @@ var readRuncmd = &cobra.Command{
 		config := &readRunConfig{
 			Config: baseConfig,
 
-			RunId: viper.GetString("run-id"),
+			RunId:     viper.GetString("run-id"),
 			Workspace: viper.GetString("workspace"),
 		}
 

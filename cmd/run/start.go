@@ -16,7 +16,7 @@ var runStartCmd = &cobra.Command{
 	Aliases:      []string{"s"},
 	Short:        "Start a run",
 	SilenceUsage: true,
-	RunE:         func(cmd *cobra.Command, _ []string)error {
+	RunE: func(cmd *cobra.Command, _ []string) error {
 		baseConfig, err := flags.InitializeCmd()
 		if err != nil {
 			return err
@@ -26,7 +26,7 @@ var runStartCmd = &cobra.Command{
 			Config: baseConfig,
 
 			AutoApply: viper.GetBool("auto-apply"),
-			Watch: viper.GetBool("watch"),
+			Watch:     viper.GetBool("watch"),
 			Workspace: viper.GetString("workspace"),
 		}
 
@@ -77,4 +77,3 @@ func runStart(cfg *runStartConfig) error {
 
 	return nil
 }
-

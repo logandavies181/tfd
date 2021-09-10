@@ -17,7 +17,7 @@ var stopRunCmd = &cobra.Command{
 	Aliases:      []string{"s"},
 	Short:        "Stop runs",
 	SilenceUsage: true,
-	RunE:         func(cmd *cobra.Command, _ []string)error {
+	RunE: func(cmd *cobra.Command, _ []string) error {
 		baseConfig, err := flags.InitializeCmd()
 		if err != nil {
 			return err

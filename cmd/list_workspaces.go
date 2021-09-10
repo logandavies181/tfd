@@ -16,7 +16,7 @@ var listWorkspacesCmd = &cobra.Command{
 	Aliases:      []string{"lw"},
 	Short:        "List Terraform Cloud workspaces you have access to",
 	SilenceUsage: true,
-	RunE:         func(_ *cobra.Command, _ []string) error {
+	RunE: func(_ *cobra.Command, _ []string) error {
 		baseConfig, err := flags.InitializeCmd()
 		if err != nil {
 			return err

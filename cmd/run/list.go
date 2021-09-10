@@ -18,7 +18,7 @@ var listRunCmd = &cobra.Command{
 	Aliases:      []string{"l"},
 	Short:        "List runs",
 	SilenceUsage: true,
-	RunE:         func(cmd *cobra.Command, _ []string)error {
+	RunE: func(cmd *cobra.Command, _ []string) error {
 		baseConfig, err := flags.InitializeCmd()
 		if err != nil {
 			return err
