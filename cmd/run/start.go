@@ -121,6 +121,7 @@ func watchAndAutoApplyRun(ctx context.Context, client *tfe.Client, org, workspac
 		return err
 	}
 
+	// read the plan directly as the relation might be nil
 	p, err := client.Plans.Read(ctx, planId)
 	if err != nil {
 		return err
@@ -131,6 +132,7 @@ func watchAndAutoApplyRun(ctx context.Context, client *tfe.Client, org, workspac
 
 		time.Sleep(1 * time.Second)
 
+		// Wait for run to be confirmable. TODO: check if this works with auto-apply enabled on the workspace
 		for {
 			r, err := client.Runs.Read(ctx, r.ID)
 			if err != nil {
@@ -138,6 +140,9 @@ func watchAndAutoApplyRun(ctx context.Context, client *tfe.Client, org, workspac
 			}
 
 			if isRunFinished(r) {
+				if r.Status == tfe.RunErrored {
+					return fmt.Errorf("Run errored")
+				}
 				fmt.Printf("Run %s finished with status: %s\n", r.ID, r.Status)
 				return nil
 			} else if r.Actions.IsConfirmable {
@@ -157,7 +162,7 @@ func watchAndAutoApplyRun(ctx context.Context, client *tfe.Client, org, workspac
 		fmt.Println("Run confirmed")
 
 		fmt.Println("Waiting for apply..")
-		watchRun(ctx, client, r.ID)
+		err := watchRun(ctx, client, r.ID)
 		if err != nil {
 			return err
 		}
@@ -170,7 +175,7 @@ func watchAndAutoApplyRun(ctx context.Context, client *tfe.Client, org, workspac
 		if isRunFinished(r) {
 			fmt.Println("Run finished")
 
-			// Try getting Apply directly instead of using relation.
+			// Try getting Apply directly instead of using relation, which may be nil
 			appl, err := client.Applies.Read(ctx, r.Apply.ID)
 			if err != nil {
 				return err
@@ -191,6 +196,9 @@ func watchRun(ctx context.Context, client *tfe.Client, runId string) error {
 		}
 
 		if isRunFinished(r) {
+			if r.Status == tfe.RunErrored {
+				return fmt.Errorf("Run errored")
+			}
 			return nil
 		} else {
 			time.Sleep(10 * time.Second)
