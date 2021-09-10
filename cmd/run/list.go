@@ -6,6 +6,7 @@ import (
 	"sort"
 
 	"github.com/logandavies181/tfd/cmd/config"
+	"github.com/logandavies181/tfd/cmd/flags"
 
 	"github.com/hashicorp/go-tfe"
 	"github.com/spf13/cobra"
@@ -17,46 +18,37 @@ var listRunCmd = &cobra.Command{
 	Aliases:      []string{"l"},
 	Short:        "List runs",
 	SilenceUsage: true,
-	RunE:         listRun,
+	RunE:         func(cmd *cobra.Command, _ []string)error {
+		baseConfig, err := flags.InitializeCmd()
+		if err != nil {
+			return err
+		}
+
+		config := &listRunConfig{
+			Config: baseConfig,
+
+			Workspace: viper.GetString("workspace"),
+		}
+
+		return listRun(config)
+	},
 }
 
 func init() {
 	RunCmd.AddCommand(listRunCmd)
 
-	listRunCmd.Flags().StringP("workspace", "w", "", "Terraform Cloud workspace to interact with")
+	flags.AddWorkspaceFlag(listRunCmd)
+
+	viper.BindPFlags(listRunCmd.Flags())
 }
 
 type listRunConfig struct {
-	*config.GlobalConfig
+	*config.Config
 
 	Workspace string
 }
 
-func getListRunConfig(cmd *cobra.Command) (*listRunConfig, error) {
-	viper.BindPFlags(cmd.Flags())
-
-	gCfg, err := config.GetGlobalConfig()
-	if err != nil {
-		return nil, err
-	}
-
-	var lCfg listRunConfig
-	err = viper.Unmarshal(&lCfg)
-	if err != nil {
-		return nil, err
-	}
-
-	lCfg.GlobalConfig = gCfg
-
-	return &lCfg, nil
-}
-
-func listRun(cmd *cobra.Command, _ []string) error {
-	cfg, err := getListRunConfig(cmd)
-	if err != nil {
-		return err
-	}
-
+func listRun(cfg *listRunConfig) error {
 	workspace, err := cfg.Client.Workspaces.Read(cfg.Ctx, cfg.Org, cfg.Workspace)
 	if err != nil {
 		return err

@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 
 	"github.com/logandavies181/tfd/cmd/config"
+	"github.com/logandavies181/tfd/cmd/flags"
 	"github.com/logandavies181/tfd/cmd/git"
 
 	"github.com/hashicorp/go-tfe"
@@ -17,51 +18,44 @@ var uploadConfigCmd = &cobra.Command{
 	Aliases:      []string{"uc"},
 	Short:        "Upload local Terraform files to Terraform Cloud",
 	SilenceUsage: true,
-	RunE:         uploadConfig,
+	RunE:         func(_ *cobra.Command, _ []string) error{
+		baseConfig, err := flags.InitializeCmd()
+		if err != nil {
+			return err
+		}
+
+		config := &uploadConfigConfig{
+			Config: baseConfig,
+
+			Path: viper.GetString("path"),
+			Workspace: viper.GetString("workspace"),
+			NoUpdateWorkingDir: viper.GetBool("no-update-workingdir"),
+		}
+
+		return uploadConfig(config)
+	},
 }
 
 func init() {
 	rootCmd.AddCommand(uploadConfigCmd)
 
-	uploadConfigCmd.Flags().StringP("path", "p", "", "Path to Terraform Directory")
-	uploadConfigCmd.Flags().StringP("workspace", "w", "", "Terraform Cloud workspace to upload to")
-	uploadConfigCmd.Flags().BoolP("no-update-workdingir", "d", false,
-		"Skip updating the Terraform Working Directory for the workspace")
+	flags.AddPathFlag(uploadConfigCmd)
+	flags.AddWorkspaceFlag(uploadConfigCmd)
+	flags.AddNoUpdateWorkingdirFlag(uploadConfigCmd)
+
+	viper.BindPFlags(uploadConfigCmd.Flags())
 }
 
 type uploadConfigConfig struct {
-	*config.GlobalConfig
+	*config.Config
 
 	Path               string
 	Workspace          string
 	NoUpdateWorkingDir bool
 }
 
-func getApiRunConfig(cmd *cobra.Command) (*uploadConfigConfig, error) {
-	viper.BindPFlags(cmd.Flags())
-
-	gCfg, err := config.GetGlobalConfig()
-	if err != nil {
-		return nil, err
-	}
-
-	var lCfg uploadConfigConfig
-	err = viper.Unmarshal(&lCfg)
-	if err != nil {
-		return nil, err
-	}
-
-	lCfg.GlobalConfig = gCfg
-
-	return &lCfg, nil
-}
-
-func uploadConfig(cmd *cobra.Command, _ []string) error {
-	cfg, err := getApiRunConfig(cmd)
-	if err != nil {
-		return err
-	}
-
+func uploadConfig(cfg *uploadConfigConfig) error {
+	// get workspace id
 	workspace, err := cfg.Client.Workspaces.Read(cfg.Ctx, cfg.Org, cfg.Workspace)
 	if err != nil {
 		return err

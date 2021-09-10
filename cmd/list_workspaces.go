@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/logandavies181/tfd/cmd/config"
+	"github.com/logandavies181/tfd/cmd/flags"
 	"github.com/logandavies181/tfd/cmd/workspace"
 
 	"github.com/hashicorp/go-tfe"
@@ -15,19 +16,21 @@ var listWorkspacesCmd = &cobra.Command{
 	Aliases:      []string{"lw"},
 	Short:        "List Terraform Cloud workspaces you have access to",
 	SilenceUsage: true,
-	RunE:         listWorkspaces,
+	RunE:         func(_ *cobra.Command, _ []string) error {
+		baseConfig, err := flags.InitializeCmd()
+		if err != nil {
+			return err
+		}
+
+		return listWorkspaces(baseConfig)
+	},
 }
 
 func init() {
 	rootCmd.AddCommand(listWorkspacesCmd)
 }
 
-func listWorkspaces(_ *cobra.Command, _ []string) error {
-	cfg, err := config.GetGlobalConfig()
-	if err != nil {
-		return err
-	}
-
+func listWorkspaces(cfg *config.Config) error {
 	var workspaces []*tfe.Workspace
 	pagination := &tfe.Pagination{
 		NextPage:   1,
