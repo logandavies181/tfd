@@ -25,7 +25,10 @@ func WatchPlan(ctx context.Context, client *tfe.Client, planId string) error {
 		}
 
 		if IsPlanFinished(p) {
-			// TODO: handle failed states
+			if p.Status == tfe.PlanErrored {
+				return fmt.Errorf("Plan errored")
+			}
+
 			return nil
 		} else {
 			time.Sleep(10 * time.Second)
