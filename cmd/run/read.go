@@ -17,7 +17,7 @@ var readRuncmd = &cobra.Command{
 	Short:        "Read a run",
 	SilenceUsage: true,
 	RunE: func(cmd *cobra.Command, _ []string) error {
-		baseConfig, err := flags.InitializeCmd()
+		baseConfig, err := flags.InitializeCmd(cmd)
 		if err != nil {
 			return err
 		}

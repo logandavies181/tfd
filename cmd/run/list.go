@@ -19,7 +19,7 @@ var listRunCmd = &cobra.Command{
 	Short:        "List runs",
 	SilenceUsage: true,
 	RunE: func(cmd *cobra.Command, _ []string) error {
-		baseConfig, err := flags.InitializeCmd()
+		baseConfig, err := flags.InitializeCmd(cmd)
 		if err != nil {
 			return err
 		}

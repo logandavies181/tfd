@@ -2,6 +2,9 @@ package flags
 
 import (
 	"github.com/logandavies181/tfd/cmd/config"
+
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var flagValidations []func() error
@@ -17,7 +20,9 @@ func validateFlags() error {
 	return nil
 }
 
-func InitializeCmd() (*config.Config, error) {
+func InitializeCmd(cmd *cobra.Command) (*config.Config, error) {
+	viper.BindPFlags(cmd.Flags())
+
 	conf, err := config.New()
 	if err != nil {
 		return nil, err

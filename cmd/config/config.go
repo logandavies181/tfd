@@ -34,6 +34,8 @@ func New() (*Config, error) {
 
 	clientConfig := defaultConfig()
 
+	clientConfig.Token = cfg.Token
+
 	client, err := tfe.NewClient(clientConfig)
 	if err != nil {
 		return nil, err

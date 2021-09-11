@@ -18,8 +18,8 @@ var uploadConfigCmd = &cobra.Command{
 	Aliases:      []string{"uc"},
 	Short:        "Upload local Terraform files to Terraform Cloud",
 	SilenceUsage: true,
-	RunE: func(_ *cobra.Command, _ []string) error {
-		baseConfig, err := flags.InitializeCmd()
+	RunE: func(cmd *cobra.Command, _ []string) error {
+		baseConfig, err := flags.InitializeCmd(cmd)
 		if err != nil {
 			return err
 		}
@@ -42,8 +42,6 @@ func init() {
 	flags.AddPathFlag(uploadConfigCmd)
 	flags.AddWorkspaceFlag(uploadConfigCmd)
 	flags.AddNoUpdateWorkingdirFlag(uploadConfigCmd)
-
-	viper.BindPFlags(uploadConfigCmd.Flags())
 }
 
 type uploadConfigConfig struct {
