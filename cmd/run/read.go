@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/logandavies181/tfd/cmd/config"
+	"github.com/logandavies181/tfd/cmd/flags"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -15,50 +16,41 @@ var readRuncmd = &cobra.Command{
 	Aliases:      []string{"r", "status"},
 	Short:        "Read a run",
 	SilenceUsage: true,
-	RunE:         readRun,
+	RunE: func(cmd *cobra.Command, _ []string) error {
+		baseConfig, err := flags.InitializeCmd(cmd)
+		if err != nil {
+			return err
+		}
+
+		config := &readRunConfig{
+			Config: baseConfig,
+
+			RunId:     viper.GetString("run-id"),
+			Workspace: viper.GetString("workspace"),
+		}
+
+		return readRun(config)
+	},
 }
 
 func init() {
 	RunCmd.AddCommand(readRuncmd)
 
-	readRuncmd.Flags().StringP("run-id", "r", "", "Run ID to read")
-	readRuncmd.Flags().StringP("workspace", "w", "", "Terraform Cloud workspace to read the run from")
+	flags.AddRunIdFlag(readRuncmd)
+	flags.AddWorkspaceFlag(readRuncmd)
 }
 
 type readRunConfig struct {
-	*config.GlobalConfig
+	*config.Config
 
-	RunId     string `mapstructure:"run-id"`
+	RunId     string
 	Workspace string
 }
 
-func getReadRunConfig(cmd *cobra.Command) (*readRunConfig, error) {
-	viper.BindPFlags(cmd.Flags())
-
-	gCfg, err := config.GetGlobalConfig()
-	if err != nil {
-		return nil, err
-	}
-
-	var lCfg readRunConfig
-	err = viper.Unmarshal(&lCfg)
-	if err != nil {
-		return nil, err
-	}
-
-	lCfg.GlobalConfig = gCfg
-
-	return &lCfg, nil
-}
-
-func readRun(cmd *cobra.Command, _ []string) error {
-	cfg, err := getReadRunConfig(cmd)
-	if err != nil {
-		return err
-	}
-
+func readRun(cfg *readRunConfig) error {
 	var runId string
 	if cfg.RunId == "" {
+		var err error
 		runId, err = getCurrentRun(cfg.Ctx, cfg.Client, cfg.Org, cfg.Workspace)
 		if err != nil {
 			return err

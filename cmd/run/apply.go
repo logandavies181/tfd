@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/logandavies181/tfd/cmd/config"
+	"github.com/logandavies181/tfd/cmd/flags"
 
 	"github.com/hashicorp/go-tfe"
 	"github.com/spf13/cobra"
@@ -15,48 +16,40 @@ var applyRunCmd = &cobra.Command{
 	Aliases:      []string{"a", "approve"},
 	Short:        "Apply a run",
 	SilenceUsage: true,
-	RunE:         applyRun,
+	RunE: func(cmd *cobra.Command, _ []string) error {
+		baseConfig, err := flags.InitializeCmd(cmd)
+		if err != nil {
+			return err
+		}
+
+		config := &applyRunConfig{
+			Config: baseConfig,
+
+			Watch:     viper.GetBool("watch"),
+			Workspace: viper.GetString("workspace"),
+		}
+
+		return applyRun(config)
+	},
 }
 
 func init() {
 	RunCmd.AddCommand(applyRunCmd)
 
-	applyRunCmd.Flags().BoolP("watch", "", false, "Watch and apply the current run")
-	applyRunCmd.Flags().StringP("workspace", "w", "", "Terraform Cloud workspace to interact with")
+	flags.AddWatchFlag(applyRunCmd)
+	flags.AddWorkspaceFlag(applyRunCmd)
+
+	viper.BindPFlags(applyRunCmd.Flags())
 }
 
 type applyRunConfig struct {
-	*config.GlobalConfig
+	*config.Config
 
 	Watch     bool
 	Workspace string
 }
 
-func getApplyRunConfig(cmd *cobra.Command) (*applyRunConfig, error) {
-	viper.BindPFlags(cmd.Flags())
-
-	gCfg, err := config.GetGlobalConfig()
-	if err != nil {
-		return nil, err
-	}
-
-	var lCfg applyRunConfig
-	err = viper.Unmarshal(&lCfg)
-	if err != nil {
-		return nil, err
-	}
-
-	lCfg.GlobalConfig = gCfg
-
-	return &lCfg, nil
-}
-
-func applyRun(cmd *cobra.Command, _ []string) error {
-	cfg, err := getApplyRunConfig(cmd)
-	if err != nil {
-		return err
-	}
-
+func applyRun(cfg *applyRunConfig) error {
 	workspace, err := cfg.Client.Workspaces.Read(cfg.Ctx, cfg.Org, cfg.Workspace)
 	if err != nil {
 		return err

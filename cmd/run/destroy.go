@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/logandavies181/tfd/cmd/config"
+	"github.com/logandavies181/tfd/cmd/flags"
 
 	"github.com/hashicorp/go-tfe"
 	"github.com/spf13/cobra"
@@ -15,7 +16,22 @@ var destroyRunCmd = &cobra.Command{
 	Aliases:      []string{"d"},
 	Short:        "Start a destroy run",
 	SilenceUsage: true,
-	RunE:         destroyRun,
+	RunE: func(cmd *cobra.Command, _ []string) error {
+		baseConfig, err := flags.InitializeCmd(cmd)
+		if err != nil {
+			return err
+		}
+
+		config := &destroyRunConfig{
+			Config: baseConfig,
+
+			AutoApply: viper.GetBool("auto-apply"),
+			Watch:     viper.GetBool("watch"),
+			Workspace: viper.GetString("workspace"),
+		}
+
+		return destroyRun(config)
+	},
 }
 
 func init() {
@@ -24,41 +40,19 @@ func init() {
 	destroyRunCmd.Flags().BoolP("auto-apply", "a", false, "Automatically apply the plan once finished")
 	destroyRunCmd.Flags().BoolP("watch", "", false, "Wait for the run to finish")
 	destroyRunCmd.Flags().StringP("workspace", "w", "", "Terraform Cloud workspace to interact with")
+
+	viper.BindPFlags(destroyRunCmd.Flags())
 }
 
 type destroyRunConfig struct {
-	*config.GlobalConfig
+	*config.Config
 
 	AutoApply bool `mapstructure:"auto-apply"`
 	Watch     bool
 	Workspace string
 }
 
-func getDestroyRunConfig(cmd *cobra.Command) (*destroyRunConfig, error) {
-	viper.BindPFlags(cmd.Flags())
-
-	gCfg, err := config.GetGlobalConfig()
-	if err != nil {
-		return nil, err
-	}
-
-	var lCfg destroyRunConfig
-	err = viper.Unmarshal(&lCfg)
-	if err != nil {
-		return nil, err
-	}
-
-	lCfg.GlobalConfig = gCfg
-
-	return &lCfg, nil
-}
-
-func destroyRun(cmd *cobra.Command, _ []string) error {
-	cfg, err := getDestroyRunConfig(cmd)
-	if err != nil {
-		return err
-	}
-
+func destroyRun(cfg *destroyRunConfig) error {
 	workspace, err := cfg.Client.Workspaces.Read(cfg.Ctx, cfg.Org, cfg.Workspace)
 	if err != nil {
 		return err

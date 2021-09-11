@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/logandavies181/tfd/cmd/config"
+	"github.com/logandavies181/tfd/cmd/flags"
 
 	"github.com/hashicorp/go-tfe"
 	"github.com/spf13/cobra"
@@ -16,7 +17,20 @@ var stopRunCmd = &cobra.Command{
 	Aliases:      []string{"s"},
 	Short:        "Stop runs",
 	SilenceUsage: true,
-	RunE:         stopRun,
+	RunE: func(cmd *cobra.Command, _ []string) error {
+		baseConfig, err := flags.InitializeCmd(cmd)
+		if err != nil {
+			return err
+		}
+
+		config := &stopRunConfig{
+			Config: baseConfig,
+
+			Workspace: viper.GetString("workspace"),
+		}
+
+		return stopRun(config)
+	},
 }
 
 func init() {
@@ -26,37 +40,12 @@ func init() {
 }
 
 type stopRunConfig struct {
-	*config.GlobalConfig
+	*config.Config
 
-	Watch     bool
 	Workspace string
 }
 
-func getStopRunConfig(cmd *cobra.Command) (*stopRunConfig, error) {
-	viper.BindPFlags(cmd.Flags())
-
-	gCfg, err := config.GetGlobalConfig()
-	if err != nil {
-		return nil, err
-	}
-
-	var lCfg stopRunConfig
-	err = viper.Unmarshal(&lCfg)
-	if err != nil {
-		return nil, err
-	}
-
-	lCfg.GlobalConfig = gCfg
-
-	return &lCfg, nil
-}
-
-func stopRun(cmd *cobra.Command, _ []string) error {
-	cfg, err := getStopRunConfig(cmd)
-	if err != nil {
-		return err
-	}
-
+func stopRun(cfg *stopRunConfig) error {
 	workspace, err := cfg.Client.Workspaces.Read(cfg.Ctx, cfg.Org, cfg.Workspace)
 	if err != nil {
 		return err
