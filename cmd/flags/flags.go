@@ -23,7 +23,7 @@ func AddWorkspaceFlag(cmd *cobra.Command) {
 }
 
 func AddNoUpdateWorkingdirFlag(cmd *cobra.Command) {
-	cmd.Flags().BoolP("no-update-workdingir", "d", false,
+	cmd.Flags().BoolP("no-update-workingdir", "d", false,
 		"Skip updating the Terraform Working Directory for the workspace")
 }
 
