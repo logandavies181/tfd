@@ -8,6 +8,16 @@ import (
 	"github.com/hashicorp/go-tfe"
 )
 
+type PlanError struct {
+	*tfe.Plan
+
+	Message string
+}
+
+func (p PlanError) Error() string {
+	return p.Message
+}
+
 func FormatResourceChanges(p *tfe.Plan) string {
 	return fmt.Sprintf(
 		"Plan: %d to add, %d to change, %d to destroy.",
@@ -26,7 +36,7 @@ func WatchPlan(ctx context.Context, client *tfe.Client, planId string) error {
 
 		if IsPlanFinished(p) {
 			if p.Status == tfe.PlanErrored {
-				return fmt.Errorf("Plan errored")
+				return PlanError{Plan: p, Message: "Plan Errored"}
 			}
 
 			return nil
