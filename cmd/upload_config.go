@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"path/filepath"
 
 	"github.com/logandavies181/tfd/cmd/config"
 	"github.com/logandavies181/tfd/cmd/flags"
@@ -67,22 +66,12 @@ func uploadConfig(cfg *uploadConfigConfig) error {
 		return err
 	}
 
-	pathToRoot, err := git.GetRootOfRepo(cfg.Path)
+	pathToRoot, workingDir, err := git.GetRootOfRepo(cfg.Path)
 	if err != nil {
 		return err
 	}
 
 	if !cfg.NoUpdateWorkingDir {
-		absPath, err := filepath.Abs(cfg.Path)
-		if err != nil {
-			return err
-		}
-
-		workingDir, err := filepath.Rel(pathToRoot, absPath)
-		if err != nil {
-			return err
-		}
-
 		cfg.Client.Workspaces.Update(cfg.Ctx, cfg.Org, cfg.Workspace, tfe.WorkspaceUpdateOptions{
 			WorkingDirectory: &workingDir,
 		})
