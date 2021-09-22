@@ -17,7 +17,7 @@ import (
 var speculativePlanCmd = &cobra.Command{
 	Use:          "speculative-plan",
 	Aliases:      []string{"spec", "sp"},
-	Short:        "Run a speculative plan using files on disk",
+	Short:        "Run a speculative plan using local files. Also works with VCS-integrated Workspaces",
 	SilenceUsage: true,
 	RunE: func(cmd *cobra.Command, _ []string) error {
 		baseConfig, err := flags.InitializeCmd(cmd)
@@ -98,23 +98,28 @@ func speculativePlan(cfg *speculativePlanConfig) error {
 
 	fmt.Println(r.Plan.ID)
 
-	err = plan.WatchPlan(cfg.Ctx, cfg.Client, r.Plan.ID)
-	if err != nil {
-		err2, ok := err.(plan.PlanError)
+	planError := plan.WatchPlan(cfg.Ctx, cfg.Client, r.Plan.ID)
+	if planError != nil {
+		err, ok := planError.(plan.PlanError)
 		if !ok {
 			return err
 		}
 
-		fmt.Println(err2)
+		fmt.Println(err)
 	}
 
 	runPlan, err := cfg.Client.Plans.Read(cfg.Ctx, r.Plan.ID)
 	if err != nil {
 		return err
 	}
-	fmt.Println("Plan logs available here:", runPlan.LogReadURL)
 
-	fmt.Println(plan.FormatResourceChanges(runPlan))
+	fmt.Println("Logs available here:", runPlan.LogReadURL)
+
+	if planError == nil {
+		fmt.Println(plan.FormatResourceChanges(runPlan))
+	} else {
+		fmt.Println(planError)
+	}
 
 	return nil
 }
