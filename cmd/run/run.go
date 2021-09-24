@@ -3,6 +3,7 @@ package run
 import (
 	"context"
 	"fmt"
+	"net/url"
 
 	"github.com/hashicorp/go-tfe"
 	"github.com/spf13/cobra"
@@ -34,4 +35,18 @@ func formatResourceChanges(a *tfe.Apply) string {
 		a.ResourceAdditions,
 		a.ResourceChanges,
 		a.ResourceDestructions)
+}
+
+func FormatRunUrl(address, org, workspace, runId string) (string, error) {
+	addressUrl, err := url.Parse(address)
+	if err != nil {
+		return "", err
+	}
+
+	return fmt.Sprintf("%s://%s/app/%s/workspaces/%s/runs/%s",
+		addressUrl.Scheme,
+		addressUrl.Host,
+		org,
+		workspace,
+		runId), nil
 }
