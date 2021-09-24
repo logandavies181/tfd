@@ -7,10 +7,12 @@ import (
 	"github.com/spf13/viper"
 )
 
-var flagValidations []func() error
+var (
+	flagValidations = make(map[string][]func() error)
+)
 
-func validateFlags() error {
-	for _, f := range flagValidations {
+func validateFlags(name string) error {
+	for _, f := range flagValidations[name] {
 		err := f()
 		if err != nil {
 			return err
@@ -18,6 +20,14 @@ func validateFlags() error {
 	}
 
 	return nil
+}
+
+func addValidation(name string, validationFunc func() error) {
+	if v, ok := flagValidations[name]; ok {
+		flagValidations[name] = append(v, validationFunc)
+	} else {
+		flagValidations[name] = []func() error{validationFunc}
+	}
 }
 
 func InitializeCmd(cmd *cobra.Command) (*config.Config, error) {
@@ -28,7 +38,7 @@ func InitializeCmd(cmd *cobra.Command) (*config.Config, error) {
 		return nil, err
 	}
 
-	err = validateFlags()
+	err = validateFlags(cmd.Name())
 	if err != nil {
 		return nil, err
 	}
