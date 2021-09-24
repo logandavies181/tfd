@@ -41,6 +41,7 @@ func init() {
 
 	rootCmd.PersistentFlags().StringP("org", "o", "", "Terraform Organization to execute against")
 	rootCmd.PersistentFlags().StringP("token", "t", "", "Token to use to authenticate to Terraform Cloud")
+	rootCmd.PersistentFlags().StringP("address", "", "https://app.terraform.io/api/v2", "Full Terraform Cloud/Enterprise API URI")
 
 	viper.BindPFlags(rootCmd.PersistentFlags())
 }

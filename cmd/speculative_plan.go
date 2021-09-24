@@ -8,6 +8,7 @@ import (
 	"github.com/logandavies181/tfd/cmd/flags"
 	"github.com/logandavies181/tfd/cmd/git"
 	"github.com/logandavies181/tfd/cmd/plan"
+	"github.com/logandavies181/tfd/cmd/run"
 
 	"github.com/hashicorp/go-tfe"
 	"github.com/spf13/cobra"
@@ -104,8 +105,6 @@ func speculativePlan(cfg *speculativePlanConfig) error {
 		if !ok {
 			return err
 		}
-
-		fmt.Println(err)
 	}
 
 	runPlan, err := cfg.Client.Plans.Read(cfg.Ctx, r.Plan.ID)
@@ -113,7 +112,11 @@ func speculativePlan(cfg *speculativePlanConfig) error {
 		return err
 	}
 
-	fmt.Println("Logs available here:", runPlan.LogReadURL)
+	planUrl, err := run.FormatRunUrl(cfg.Address, cfg.Org, cfg.Workspace, r.ID)
+	if err != nil {
+		return err
+	}
+	fmt.Println("View the plan in the UI:", planUrl)
 
 	if planError == nil {
 		fmt.Println(plan.FormatResourceChanges(runPlan))

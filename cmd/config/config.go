@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"net/url"
 
 	"github.com/hashicorp/go-cleanhttp"
 	"github.com/hashicorp/go-tfe"
@@ -11,8 +12,9 @@ import (
 )
 
 type Config struct {
-	Org   string
-	Token string
+	Org     string
+	Token   string
+	Address string
 
 	Client *tfe.Client
 	Ctx    context.Context
@@ -33,6 +35,13 @@ func New() (*Config, error) {
 	}
 
 	clientConfig := defaultConfig()
+
+	addressUrl, err := url.Parse(viper.GetString("address"))
+	if err != nil {
+		return nil, err
+	}
+	clientConfig.Address = fmt.Sprintf("%s://%s", addressUrl.Scheme, addressUrl.Host)
+	clientConfig.BasePath = addressUrl.Path
 
 	clientConfig.Token = cfg.Token
 
