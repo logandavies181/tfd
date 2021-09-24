@@ -18,6 +18,10 @@ func (p PlanError) Error() string {
 	return p.Message
 }
 
+func FormatPlanUrl(address string, plan *tfe.Plan) string {
+	return fmt.Sprintf("%s/%s", address, plan.ID)
+}
+
 func FormatResourceChanges(p *tfe.Plan) string {
 	return fmt.Sprintf(
 		"Plan: %d to add, %d to change, %d to destroy.",

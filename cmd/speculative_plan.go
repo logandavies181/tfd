@@ -104,8 +104,6 @@ func speculativePlan(cfg *speculativePlanConfig) error {
 		if !ok {
 			return err
 		}
-
-		fmt.Println(err)
 	}
 
 	runPlan, err := cfg.Client.Plans.Read(cfg.Ctx, r.Plan.ID)
@@ -113,7 +111,7 @@ func speculativePlan(cfg *speculativePlanConfig) error {
 		return err
 	}
 
-	fmt.Println("Logs available here:", runPlan.LogReadURL)
+	fmt.Println("View the plan in the UI:", plan.FormatPlanUrl(cfg.Address, runPlan))
 
 	if planError == nil {
 		fmt.Println(plan.FormatResourceChanges(runPlan))
