@@ -14,7 +14,7 @@ func AddPathFlag(cmd *cobra.Command) {
 func AddWorkspaceFlag(cmd *cobra.Command) {
 	cmd.Flags().StringP("workspace", "w", "", "Terraform Cloud workspace to upload to")
 
-	flagValidations = append(flagValidations, func() error {
+	addValidation(cmd.Name(), func() error {
 		if viper.GetString("workspace") == "" {
 			return fmt.Errorf("workspace must be set")
 		}
