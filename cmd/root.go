@@ -27,7 +27,7 @@ var rootCmd = &cobra.Command{
 func Execute(semver string) {
 	rootCmd.Version = semver
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
+		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 }
