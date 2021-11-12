@@ -24,3 +24,7 @@ func MockClient() *tfe.Client {
 type Workspaces interface {
 	tfe.Workspaces
 }
+
+type Plans interface {
+	tfe.Plans
+}
