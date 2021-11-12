@@ -72,9 +72,12 @@ func uploadConfig(cfg *uploadConfigConfig) error {
 	}
 
 	if !cfg.NoUpdateWorkingDir {
-		cfg.Client.Workspaces.Update(cfg.Ctx, cfg.Org, cfg.Workspace, tfe.WorkspaceUpdateOptions{
+		_, err = cfg.Client.Workspaces.Update(cfg.Ctx, cfg.Org, cfg.Workspace, tfe.WorkspaceUpdateOptions{
 			WorkingDirectory: &workingDir,
 		})
+		if err != nil {
+			return fmt.Errorf("Failed to update workspace working directory: %s", err)
+		}
 	}
 
 	err = cfg.Client.ConfigurationVersions.Upload(cfg.Ctx, cv.UploadURL, pathToRoot)
