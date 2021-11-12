@@ -12,7 +12,7 @@ type NewClientCreator interface {
 	NewClient(*tfe.Config) (*tfe.Client, error)
 }
 
-type newClientCreator struct {}
+type newClientCreator struct{}
 
 func (newClientCreator) NewClient(cfg *tfe.Config) (*tfe.Client, error) {
 	if mockNewClient {

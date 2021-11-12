@@ -29,7 +29,7 @@ func TestValidateConfig(t *testing.T) {
 	// success case
 	goodCfg := &Config{
 		Token: "faketoken",
-		Org: "exampleorg",
+		Org:   "exampleorg",
 	}
 	err := validateConfig(goodCfg)
 	assert.Nil(t, err)
