@@ -99,6 +99,12 @@ func speculativePlan(cfg *speculativePlanConfig) error {
 
 	fmt.Println(r.Plan.ID)
 
+	planUrl, err := run.FormatRunUrl(cfg.Address, cfg.Org, cfg.Workspace, r.ID)
+	if err != nil {
+		return err
+	}
+	fmt.Println("View the plan in the UI:", planUrl)
+
 	planError := plan.WatchPlan(cfg.Ctx, cfg.Client, r.Plan.ID)
 	if planError != nil {
 		err, ok := planError.(plan.PlanError)
@@ -111,12 +117,6 @@ func speculativePlan(cfg *speculativePlanConfig) error {
 	if err != nil {
 		return err
 	}
-
-	planUrl, err := run.FormatRunUrl(cfg.Address, cfg.Org, cfg.Workspace, r.ID)
-	if err != nil {
-		return err
-	}
-	fmt.Println("View the plan in the UI:", planUrl)
 
 	if planError == nil {
 		fmt.Println(plan.FormatResourceChanges(runPlan))
