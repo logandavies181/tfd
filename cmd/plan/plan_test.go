@@ -12,8 +12,8 @@ import (
 
 func TestFormatResourceChanges(t *testing.T) {
 	plan := &tfe.Plan{
-		ResourceAdditions: 1,
-		ResourceChanges: 2,
+		ResourceAdditions:    1,
+		ResourceChanges:      2,
 		ResourceDestructions: 3,
 	}
 
@@ -65,7 +65,7 @@ func TestWatchPlan(t *testing.T) {
 	cfg := mocks.MockConfig()
 	cfg.Client.Plans = m
 
-	pollingInterval = 0
+	pollingIntervalSeconds = 0
 	err := WatchPlan(cfg.Ctx, cfg.Client, "plan-123")
 	assert.Nil(t, err)
 }

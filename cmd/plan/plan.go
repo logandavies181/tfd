@@ -9,7 +9,7 @@ import (
 )
 
 // overridden in tests to speed them up
-var pollingInterval time.Duration = 10
+var pollingIntervalSeconds time.Duration = 10
 
 type PlanError struct {
 	*tfe.Plan
@@ -44,7 +44,7 @@ func WatchPlan(ctx context.Context, client *tfe.Client, planId string) error {
 
 			return nil
 		} else {
-			time.Sleep(pollingInterval * time.Second)
+			time.Sleep(pollingIntervalSeconds * time.Second)
 		}
 	}
 }

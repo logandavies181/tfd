@@ -49,6 +49,8 @@ type speculativePlanConfig struct {
 
 	Path      string
 	Workspace string
+
+	mockGit bool
 }
 
 func speculativePlan(cfg *speculativePlanConfig) error {
@@ -67,9 +69,14 @@ func speculativePlan(cfg *speculativePlanConfig) error {
 	if err != nil {
 		return err
 	}
-	pathToRoot, workingDir, err := git.GetRootOfRepo(cfg.Path)
-	if err != nil {
-		return err
+	var pathToRoot, workingDir string
+	if cfg.mockGit {
+		pathToRoot, workingDir = "pathToRoot", "workingDir"
+	} else {
+		pathToRoot, workingDir, err = git.GetRootOfRepo(cfg.Path)
+		if err != nil {
+			return err
+		}
 	}
 
 	if workspace.WorkingDirectory != workingDir {

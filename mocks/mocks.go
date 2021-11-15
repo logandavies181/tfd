@@ -8,8 +8,9 @@ import (
 
 func MockConfig() *config.Config {
 	return &config.Config{
-		Org:   "test",
-		Token: "secret",
+		Address: "https://example.com",
+		Org:     "test",
+		Token:   "secret",
 
 		Client: MockClient(),
 	}
@@ -21,10 +22,18 @@ func MockClient() *tfe.Client {
 	}
 }
 
-type Workspaces interface {
-	tfe.Workspaces
+type ConfigurationVersions interface {
+	tfe.ConfigurationVersions
 }
 
 type Plans interface {
 	tfe.Plans
+}
+
+type Runs interface {
+	tfe.Runs
+}
+
+type Workspaces interface {
+	tfe.Workspaces
 }
