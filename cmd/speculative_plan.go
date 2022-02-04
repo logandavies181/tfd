@@ -106,11 +106,11 @@ func speculativePlan(cfg *speculativePlanConfig) error {
 
 	fmt.Println(r.Plan.ID)
 
-	planUrl, err := run.FormatRunUrl(cfg.Address, cfg.Org, cfg.Workspace, r.ID)
+	runUrl, err := run.FormatRunUrl(cfg.Address, cfg.Org, cfg.Workspace, r.ID)
 	if err != nil {
 		return err
 	}
-	fmt.Println("View the plan in the UI:", planUrl)
+	fmt.Println("View the run in the UI:", runUrl)
 
 	planError := plan.WatchPlan(cfg.Ctx, cfg.Client, r.Plan.ID)
 	if planError != nil {

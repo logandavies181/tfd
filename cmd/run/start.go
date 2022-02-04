@@ -69,7 +69,7 @@ func runStart(cfg *runStartConfig) error {
 	fmt.Println(r.ID)
 
 	if cfg.Watch || cfg.AutoApply {
-		err = watchAndAutoApplyRun(cfg.Ctx, cfg.Client, cfg.Org, workspace.Name, r, cfg.AutoApply)
+		err = watchAndAutoApplyRun(cfg.Ctx, cfg.Client, cfg.Org, workspace.Name, r, cfg.AutoApply, cfg.Address)
 		if err != nil {
 			return err
 		}
