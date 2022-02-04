@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/logandavies181/tfd/cmd/plan"
-	"github.com/logandavies181/tfd/cmd/run"
 
 	"github.com/hashicorp/go-tfe"
 )
@@ -24,11 +23,11 @@ func watchAndAutoApplyRun(ctx context.Context, client *tfe.Client, org, workspac
 		return err
 	}
 
-	runUrl, err := run.FormatRunUrl(address, org, workspaceName, r.ID)
+	runUrl, err := FormatRunUrl(address, org, workspaceName, r.ID)
 	if err != nil {
 		return err
 	}
-	fmt.Println("View the plan in the UI:", planUrl)
+	fmt.Println("View the plan in the UI:", runUrl)
 
 	// r.Plan seems to be nil when we get it from the current workspace??
 	var planId string
