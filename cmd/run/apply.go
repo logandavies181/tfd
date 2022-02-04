@@ -62,7 +62,7 @@ func applyRun(cfg *applyRunConfig) error {
 		}
 
 		run := workspace.CurrentRun
-		return watchAndAutoApplyRun(cfg.Ctx, cfg.Client, cfg.Org, cfg.Workspace, run, true)
+		return watchAndAutoApplyRun(cfg.Ctx, cfg.Client, cfg.Org, cfg.Workspace, run, true, cfg.Address)
 	}
 
 	runList, err := cfg.Client.Runs.List(

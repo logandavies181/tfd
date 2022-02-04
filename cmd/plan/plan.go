@@ -8,6 +8,9 @@ import (
 	"github.com/hashicorp/go-tfe"
 )
 
+// overridden in tests to speed them up
+var pollingIntervalSeconds time.Duration = 10
+
 type PlanError struct {
 	*tfe.Plan
 
@@ -26,7 +29,7 @@ func FormatResourceChanges(p *tfe.Plan) string {
 		p.ResourceDestructions)
 }
 
-// watchRun periodically checks the Run and returns when it is a finished, errored, or waiting for confirmation
+// WatchRun periodically checks the Run and returns when it is finished, errored, or waiting for confirmation
 func WatchPlan(ctx context.Context, client *tfe.Client, planId string) error {
 	for {
 		p, err := client.Plans.Read(ctx, planId)
@@ -41,7 +44,7 @@ func WatchPlan(ctx context.Context, client *tfe.Client, planId string) error {
 
 			return nil
 		} else {
-			time.Sleep(10 * time.Second)
+			time.Sleep(pollingIntervalSeconds * time.Second)
 		}
 	}
 }

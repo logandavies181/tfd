@@ -12,7 +12,7 @@ import (
 
 // watchAndAutoApplyRun waits for a run to plan and optionally auto-applies it, waiting for the apply to finish if so.
 // It will return an error if it detects a queue on the workspace
-func watchAndAutoApplyRun(ctx context.Context, client *tfe.Client, org, workspaceName string, r *tfe.Run, autoApply bool) error {
+func watchAndAutoApplyRun(ctx context.Context, client *tfe.Client, org, workspaceName string, r *tfe.Run, autoApply bool, address string) error {
 	if r == nil {
 		return fmt.Errorf("Fatal: Run is nil")
 	}
@@ -22,6 +22,12 @@ func watchAndAutoApplyRun(ctx context.Context, client *tfe.Client, org, workspac
 	if err != nil {
 		return err
 	}
+
+	runUrl, err := FormatRunUrl(address, org, workspaceName, r.ID)
+	if err != nil {
+		return err
+	}
+	fmt.Println("View the plan in the UI:", runUrl)
 
 	// r.Plan seems to be nil when we get it from the current workspace??
 	var planId string

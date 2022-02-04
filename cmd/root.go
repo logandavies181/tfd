@@ -11,6 +11,10 @@ import (
 	"github.com/spf13/viper"
 )
 
+const (
+	defaultTerraformCloudURI = "https://app.terraform.io/api/v2"
+)
+
 var (
 	cfgFile string
 )
@@ -41,7 +45,7 @@ func init() {
 
 	rootCmd.PersistentFlags().StringP("org", "o", "", "Terraform Organization to execute against")
 	rootCmd.PersistentFlags().StringP("token", "t", "", "Token to use to authenticate to Terraform Cloud")
-	rootCmd.PersistentFlags().StringP("address", "", "https://app.terraform.io/api/v2", "Full Terraform Cloud/Enterprise API URI")
+	rootCmd.PersistentFlags().StringP("address", "", defaultTerraformCloudURI, "Full Terraform Cloud/Enterprise API URI")
 
 	viper.BindPFlags(rootCmd.PersistentFlags())
 }

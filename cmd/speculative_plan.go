@@ -49,6 +49,8 @@ type speculativePlanConfig struct {
 
 	Path      string
 	Workspace string
+
+	mockGit bool
 }
 
 func speculativePlan(cfg *speculativePlanConfig) error {
@@ -67,9 +69,14 @@ func speculativePlan(cfg *speculativePlanConfig) error {
 	if err != nil {
 		return err
 	}
-	pathToRoot, workingDir, err := git.GetRootOfRepo(cfg.Path)
-	if err != nil {
-		return err
+	var pathToRoot, workingDir string
+	if cfg.mockGit {
+		pathToRoot, workingDir = "pathToRoot", "workingDir"
+	} else {
+		pathToRoot, workingDir, err = git.GetRootOfRepo(cfg.Path)
+		if err != nil {
+			return err
+		}
 	}
 
 	if workspace.WorkingDirectory != workingDir {
@@ -99,6 +106,12 @@ func speculativePlan(cfg *speculativePlanConfig) error {
 
 	fmt.Println(r.Plan.ID)
 
+	runUrl, err := run.FormatRunUrl(cfg.Address, cfg.Org, cfg.Workspace, r.ID)
+	if err != nil {
+		return err
+	}
+	fmt.Println("View the run in the UI:", runUrl)
+
 	planError := plan.WatchPlan(cfg.Ctx, cfg.Client, r.Plan.ID)
 	if planError != nil {
 		err, ok := planError.(plan.PlanError)
@@ -111,12 +124,6 @@ func speculativePlan(cfg *speculativePlanConfig) error {
 	if err != nil {
 		return err
 	}
-
-	planUrl, err := run.FormatRunUrl(cfg.Address, cfg.Org, cfg.Workspace, r.ID)
-	if err != nil {
-		return err
-	}
-	fmt.Println("View the plan in the UI:", planUrl)
 
 	if planError == nil {
 		fmt.Println(plan.FormatResourceChanges(runPlan))
