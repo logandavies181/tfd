@@ -1,12 +1,9 @@
 package run
 
 import (
-	"fmt"
-
 	"github.com/logandavies181/tfd/cmd/config"
 	"github.com/logandavies181/tfd/cmd/flags"
 
-	"github.com/hashicorp/go-tfe"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -25,12 +22,18 @@ var runStartCmd = &cobra.Command{
 		config := &runStartConfig{
 			Config: baseConfig,
 
-			AutoApply: viper.GetBool("auto-apply"),
-			Watch:     viper.GetBool("watch"),
-			Workspace: viper.GetString("workspace"),
+			AutoApply:     viper.GetBool("auto-apply"),
+			FireAndForget: viper.GetBool("fire-and-forget"),
+			Message:       viper.GetString("message"),
+			Refresh:       viper.GetBool("refresh"),
+			RefreshOnly:   viper.GetBool("refresh-only"),
+			Replace:       viper.GetStringSlice("replace"),
+			Targets:       viper.GetStringSlice("targets"),
+			Watch:         viper.GetBool("watch"),
+			Workspace:     viper.GetString("workspace"),
 		}
 
-		return runStart(config)
+		return config.startRun(create)
 	},
 }
 
@@ -38,6 +41,12 @@ func init() {
 	RunCmd.AddCommand(runStartCmd)
 
 	flags.AddAutoApplyFlag(runStartCmd)
+	flags.AddFireAndForgetFlag(runStartCmd)
+	flags.AddMessageFlag(runStartCmd)
+	flags.AddRefreshFlag(runStartCmd)
+	flags.AddRefreshOnlyFlag(runStartCmd)
+	flags.AddReplaceFlag(runStartCmd)
+	flags.AddTargetsFlag(runStartCmd)
 	flags.AddWatchFlag(runStartCmd)
 	flags.AddWorkspaceFlag(runStartCmd)
 }
@@ -45,35 +54,14 @@ func init() {
 type runStartConfig struct {
 	*config.Config
 
-	AutoApply bool `mapstructure:"auto-apply"`
-	Watch     bool
-	Workspace string
-}
-
-func runStart(cfg *runStartConfig) error {
-	workspace, err := cfg.Client.Workspaces.Read(cfg.Ctx, cfg.Org, cfg.Workspace)
-	if err != nil {
-		return err
-	}
-
-	r, err := cfg.Client.Runs.Create(
-		cfg.Ctx,
-		tfe.RunCreateOptions{
-			Workspace: workspace,
-		},
-	)
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(r.ID)
-
-	if cfg.Watch || cfg.AutoApply {
-		err = watchAndAutoApplyRun(cfg.Ctx, cfg.Client, cfg.Org, workspace.Name, r, cfg.AutoApply, cfg.Address)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
+	AutoApply     bool `mapstructure:"auto-apply"`
+	FireAndForget bool `mapstructure:"fire-and-forget"`
+	IsDestroy     bool
+	Message       string
+	Refresh       bool
+	RefreshOnly   bool `mapstructure:"refresh-only"`
+	Replace       []string
+	Targets       []string
+	Watch         bool
+	Workspace     string
 }

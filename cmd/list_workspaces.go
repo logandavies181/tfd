@@ -40,7 +40,7 @@ func listWorkspaces(cfg *config.Config) error {
 		if pagination == nil || pagination.CurrentPage == pagination.TotalPages {
 			break
 		}
-		workspaceListResp, err := cfg.Client.Workspaces.List(cfg.Ctx, cfg.Org, tfe.WorkspaceListOptions{
+		workspaceListResp, err := cfg.Client.Workspaces.List(cfg.Ctx, cfg.Org, &tfe.WorkspaceListOptions{
 			ListOptions: tfe.ListOptions{
 				PageNumber: pagination.NextPage,
 			},

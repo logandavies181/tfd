@@ -16,9 +16,13 @@ func TestUnvalidatedFlags(t *testing.T) {
 		Use: testCommandName,
 	}
 	AddPathFlag(cmd)
-	AddNoUpdateWorkingdirFlag(cmd)
 	AddAutoApplyFlag(cmd)
+	AddMessageFlag(cmd)
 	AddWatchFlag(cmd)
+	AddRefreshFlag(cmd)
+	AddRefreshOnlyFlag(cmd)
+	AddReplaceFlag(cmd)
+	AddTargetsFlag(cmd)
 	AddRunIdFlag(cmd)
 
 	err := validateFlags(testCommandName)

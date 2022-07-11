@@ -54,7 +54,7 @@ func stopRun(cfg *stopRunConfig) error {
 	runList, err := cfg.Client.Runs.List(
 		cfg.Ctx,
 		workspace.ID,
-		tfe.RunListOptions{})
+		&tfe.RunListOptions{})
 	if err != nil {
 		return err
 	}

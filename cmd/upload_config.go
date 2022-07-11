@@ -26,9 +26,8 @@ var uploadConfigCmd = &cobra.Command{
 		config := &uploadConfigConfig{
 			Config: baseConfig,
 
-			Path:               viper.GetString("path"),
-			Workspace:          viper.GetString("workspace"),
-			NoUpdateWorkingDir: viper.GetBool("no-update-workingdir"),
+			Path:      viper.GetString("path"),
+			Workspace: viper.GetString("workspace"),
 		}
 
 		return uploadConfig(config)
@@ -40,15 +39,13 @@ func init() {
 
 	flags.AddPathFlag(uploadConfigCmd)
 	flags.AddWorkspaceFlag(uploadConfigCmd)
-	flags.AddNoUpdateWorkingdirFlag(uploadConfigCmd)
 }
 
 type uploadConfigConfig struct {
 	*config.Config
 
-	Path               string
-	Workspace          string
-	NoUpdateWorkingDir bool
+	Path      string
+	Workspace string
 }
 
 func uploadConfig(cfg *uploadConfigConfig) error {
@@ -66,18 +63,9 @@ func uploadConfig(cfg *uploadConfigConfig) error {
 		return err
 	}
 
-	pathToRoot, workingDir, err := git.GetRootOfRepo(cfg.Path)
+	pathToRoot, _, err := git.GetRootOfRepo(cfg.Path)
 	if err != nil {
 		return err
-	}
-
-	if !cfg.NoUpdateWorkingDir {
-		_, err = cfg.Client.Workspaces.Update(cfg.Ctx, cfg.Org, cfg.Workspace, tfe.WorkspaceUpdateOptions{
-			WorkingDirectory: &workingDir,
-		})
-		if err != nil {
-			return fmt.Errorf("Failed to update workspace working directory: %s", err)
-		}
 	}
 
 	err = cfg.Client.ConfigurationVersions.Upload(cfg.Ctx, cv.UploadURL, pathToRoot)
@@ -85,7 +73,7 @@ func uploadConfig(cfg *uploadConfigConfig) error {
 		return err
 	}
 
-	fmt.Println(cv.ID)
+	fmt.Println("Created configuration version:", cv.ID)
 
 	return nil
 }

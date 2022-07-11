@@ -9,6 +9,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const (
+	destroy = iota
+	create
+)
+
 var RunCmd = &cobra.Command{
 	Use:           "run",
 	Aliases:       []string{"r"},
@@ -49,4 +54,49 @@ func FormatRunUrl(address, org, workspace, runId string) (string, error) {
 		org,
 		workspace,
 		runId), nil
+}
+
+func (cfg runStartConfig) startRun(runType int) error {
+	workspace, err := cfg.Client.Workspaces.Read(cfg.Ctx, cfg.Org, cfg.Workspace)
+	if err != nil {
+		return err
+	}
+
+	var isDestroy bool
+	switch runType {
+	case destroy:
+		isDestroy = true
+	case create:
+		isDestroy = false
+	default:
+		return fmt.Errorf("Run type must be run.destroy or run.create. Unknown enum: %v", runType)
+	}
+
+	r, err := cfg.Client.Runs.Create(
+		cfg.Ctx,
+		tfe.RunCreateOptions{
+			AutoApply:    &cfg.FireAndForget,
+			IsDestroy:    &isDestroy,
+			Message:      &cfg.Message,
+			Refresh:      &cfg.Refresh,
+			RefreshOnly:  &cfg.RefreshOnly,
+			ReplaceAddrs: cfg.Replace,
+			TargetAddrs:  cfg.Targets,
+			Workspace:    workspace,
+		},
+	)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("Started run:", r.ID)
+
+	if cfg.Watch || cfg.AutoApply {
+		err = watchAndAutoApplyRun(cfg.Ctx, cfg.Client, cfg.Org, workspace.Name, r, cfg.AutoApply, cfg.Address)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
