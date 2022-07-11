@@ -18,16 +18,22 @@ var destroyRunCmd = &cobra.Command{
 			return err
 		}
 
-		config := &runStartConfig{
+		config := &RunStartConfig{
 			Config: baseConfig,
 
-			AutoApply: viper.GetBool("auto-apply"),
-			Message:   viper.GetString("message"),
-			Watch:     viper.GetBool("watch"),
-			Workspace: viper.GetString("workspace"),
+			AutoApply:     viper.GetBool("auto-apply"),
+			ConfigurationVersion:     viper.GetString("configuration-version"),
+			FireAndForget: viper.GetBool("fire-and-forget"),
+			Message:       viper.GetString("message"),
+			Refresh:       viper.GetBool("refresh"),
+			RefreshOnly:   viper.GetBool("refresh-only"),
+			Replace:       viper.GetStringSlice("replace"),
+			Targets:       viper.GetStringSlice("targets"),
+			Watch:         viper.GetBool("watch"),
+			Workspace:     viper.GetString("workspace"),
 		}
 
-		return config.startRun(destroy)
+		return config.StartRun(DESTROY)
 	},
 }
 
@@ -35,9 +41,13 @@ func init() {
 	RunCmd.AddCommand(destroyRunCmd)
 
 	flags.AddAutoApplyFlag(destroyRunCmd)
+	flags.AddConfigurationVersionFlag(destroyRunCmd)
+	flags.AddFireAndForgetFlag(destroyRunCmd)
 	flags.AddMessageFlag(destroyRunCmd)
+	flags.AddRefreshFlag(destroyRunCmd)
+	flags.AddRefreshOnlyFlag(destroyRunCmd)
+	flags.AddReplaceFlag(destroyRunCmd)
+	flags.AddTargetsFlag(destroyRunCmd)
 	flags.AddWatchFlag(destroyRunCmd)
 	flags.AddWorkspaceFlag(destroyRunCmd)
-
-	viper.BindPFlags(destroyRunCmd.Flags())
 }

@@ -32,14 +32,7 @@ func init() {
 
 func listWorkspaces(cfg *config.Config) error {
 	var workspaces []*tfe.Workspace
-	pagination := &tfe.Pagination{
-		NextPage:   1,
-		TotalPages: -1,
-	}
-	for {
-		if pagination == nil || pagination.CurrentPage == pagination.TotalPages {
-			break
-		}
+	WithPagination(func(pagination *tfe.Pagination) error {
 		workspaceListResp, err := cfg.Client.Workspaces.List(cfg.Ctx, cfg.Org, &tfe.WorkspaceListOptions{
 			ListOptions: tfe.ListOptions{
 				PageNumber: pagination.NextPage,
@@ -51,11 +44,35 @@ func listWorkspaces(cfg *config.Config) error {
 		pagination = workspaceListResp.Pagination
 
 		workspaces = append(workspaces, workspaceListResp.Items...)
-	}
+
+		return nil
+	}, nil)
 
 	workspace.SortWorkspacesByName(workspaces)
 	for _, ws := range workspaces {
 		fmt.Println(ws.Name)
+	}
+
+	return nil
+}
+
+func WithPagination(work func(pagination *tfe.Pagination) error, breakFunc func() bool) error {
+	pagination := &tfe.Pagination{
+		NextPage:   1,
+		TotalPages: -1,
+	}
+	for {
+		if pagination == nil || pagination.CurrentPage == pagination.TotalPages {
+			break
+		}
+		err := work(pagination)
+		if err != nil {
+			return err
+		}
+
+		if breakFunc() {
+			break
+		}
 	}
 
 	return nil

@@ -19,10 +19,11 @@ var runStartCmd = &cobra.Command{
 			return err
 		}
 
-		config := &runStartConfig{
+		config := &RunStartConfig{
 			Config: baseConfig,
 
 			AutoApply:     viper.GetBool("auto-apply"),
+			ConfigurationVersion:     viper.GetString("configuration-version"),
 			FireAndForget: viper.GetBool("fire-and-forget"),
 			Message:       viper.GetString("message"),
 			Refresh:       viper.GetBool("refresh"),
@@ -33,7 +34,7 @@ var runStartCmd = &cobra.Command{
 			Workspace:     viper.GetString("workspace"),
 		}
 
-		return config.startRun(create)
+		return config.StartRun(CREATE)
 	},
 }
 
@@ -41,6 +42,7 @@ func init() {
 	RunCmd.AddCommand(runStartCmd)
 
 	flags.AddAutoApplyFlag(runStartCmd)
+	flags.AddConfigurationVersionFlag(runStartCmd)
 	flags.AddFireAndForgetFlag(runStartCmd)
 	flags.AddMessageFlag(runStartCmd)
 	flags.AddRefreshFlag(runStartCmd)
@@ -51,10 +53,11 @@ func init() {
 	flags.AddWorkspaceFlag(runStartCmd)
 }
 
-type runStartConfig struct {
+type RunStartConfig struct {
 	*config.Config
 
 	AutoApply     bool `mapstructure:"auto-apply"`
+	ConfigurationVersion string `mapstructure:"configuration-version"`
 	FireAndForget bool `mapstructure:"fire-and-forget"`
 	IsDestroy     bool
 	Message       string

@@ -11,6 +11,10 @@ func AddAutoApplyFlag(cmd *cobra.Command) {
 	cmd.Flags().BoolP("auto-apply", "a", false, "Automatically apply the plan once finished")
 }
 
+func AddConfigurationVersionFlag(cmd *cobra.Command) {
+	cmd.Flags().StringP("configuration-version", "", "", "Configuration version to create a run against")
+}
+
 func AddFireAndForgetFlag(cmd *cobra.Command) {
 	cmd.Flags().BoolP("fire-and-forget", "f", false,
 		"Non-interactively apply the plan once finished. Warning: this will still auto apply even if tfd exits. Use --auto-apply instead for safety")
@@ -21,7 +25,7 @@ func AddMessageFlag(cmd *cobra.Command) {
 }
 
 func AddPathFlag(cmd *cobra.Command) {
-	cmd.Flags().StringP("path", "p", "", "Path to Terraform Directory")
+	cmd.Flags().StringP("path", "p", "", "Path to project. Can be any subdirectory of the project, but it must be a git project")
 }
 
 func AddRefreshFlag(cmd *cobra.Command) {

@@ -2,12 +2,10 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/logandavies181/tfd/cmd/config"
 	"github.com/logandavies181/tfd/cmd/flags"
 	"github.com/logandavies181/tfd/cmd/git"
-	"github.com/logandavies181/tfd/cmd/plan"
 	"github.com/logandavies181/tfd/cmd/run"
 
 	"github.com/hashicorp/go-tfe"
@@ -26,11 +24,24 @@ var speculativePlanCmd = &cobra.Command{
 			return err
 		}
 
+		rsc := run.RunStartConfig{
+			AutoApply:     viper.GetBool("auto-apply"),
+			FireAndForget: viper.GetBool("fire-and-forget"),
+			Message:       viper.GetString("message"),
+			Refresh:       viper.GetBool("refresh"),
+			RefreshOnly:   viper.GetBool("refresh-only"),
+			Replace:       viper.GetStringSlice("replace"),
+			Targets:       viper.GetStringSlice("targets"),
+			Watch:         viper.GetBool("watch"),
+			Workspace:     viper.GetString("workspace"),
+		}
+
 		config := &speculativePlanConfig{
 			Config: baseConfig,
 
 			Path:      viper.GetString("path"),
 			Workspace: viper.GetString("workspace"),
+			RunStartConfig: rsc,
 		}
 
 		return speculativePlan(config)
@@ -42,6 +53,14 @@ func init() {
 
 	flags.AddPathFlag(speculativePlanCmd)
 	flags.AddWorkspaceFlag(speculativePlanCmd)
+	flags.AddAutoApplyFlag(speculativePlanCmd)
+	flags.AddFireAndForgetFlag(speculativePlanCmd)
+	flags.AddMessageFlag(speculativePlanCmd)
+	flags.AddRefreshFlag(speculativePlanCmd)
+	flags.AddRefreshOnlyFlag(speculativePlanCmd)
+	flags.AddReplaceFlag(speculativePlanCmd)
+	flags.AddTargetsFlag(speculativePlanCmd)
+	flags.AddWatchFlag(speculativePlanCmd)
 }
 
 type speculativePlanConfig struct {
@@ -49,6 +68,7 @@ type speculativePlanConfig struct {
 
 	Path      string
 	Workspace string
+	RunStartConfig       run.RunStartConfig
 
 	mockGit bool
 }
@@ -69,24 +89,14 @@ func speculativePlan(cfg *speculativePlanConfig) error {
 	if err != nil {
 		return err
 	}
-	var pathToRoot, workingDir string
+	var pathToRoot string
 	if cfg.mockGit {
-		pathToRoot, workingDir = "pathToRoot", "workingDir"
+		pathToRoot = "pathToRoot"
 	} else {
-		pathToRoot, workingDir, err = git.GetRootOfRepo(cfg.Path)
+		pathToRoot, _, err = git.GetRootOfRepo(cfg.Path)
 		if err != nil {
 			return err
 		}
-	}
-
-	if workspace.WorkingDirectory != workingDir {
-		fmt.Fprintf(os.Stderr,
-			"WARNING: workspace: %s will run plan using working directory: %s intead of %s (supplied).\n"+
-				"Due to a limitation on the Terraform Cloud/Enterprise API, the Working Directory cannot be "+
-				"overridden for a single run.\n",
-			cfg.Workspace,
-			workspace.WorkingDirectory,
-			workingDir)
 	}
 
 	err = cfg.Client.ConfigurationVersions.Upload(cfg.Ctx, cv.UploadURL, pathToRoot)
@@ -94,42 +104,9 @@ func speculativePlan(cfg *speculativePlanConfig) error {
 		return err
 	}
 
-	fmt.Println(cv.ID)
+	fmt.Println("Created configuration version:", cv.ID)
 
-	r, err := cfg.Client.Runs.Create(cfg.Ctx, tfe.RunCreateOptions{
-		Workspace:            workspace,
-		ConfigurationVersion: cv,
-	})
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(r.Plan.ID)
-
-	runUrl, err := run.FormatRunUrl(cfg.Address, cfg.Org, cfg.Workspace, r.ID)
-	if err != nil {
-		return err
-	}
-	fmt.Println("View the run in the UI:", runUrl)
-
-	planError := plan.WatchPlan(cfg.Ctx, cfg.Client, r.Plan.ID)
-	if planError != nil {
-		err, ok := planError.(plan.PlanError)
-		if !ok {
-			return err
-		}
-	}
-
-	runPlan, err := cfg.Client.Plans.Read(cfg.Ctx, r.Plan.ID)
-	if err != nil {
-		return err
-	}
-
-	if planError == nil {
-		fmt.Println(plan.FormatResourceChanges(runPlan))
-	} else {
-		fmt.Println(planError)
-	}
+	cfg.RunStartConfig.StartRun(run.CREATE)
 
 	return nil
 }
