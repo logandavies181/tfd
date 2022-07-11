@@ -5,8 +5,9 @@ import (
 
 	"github.com/logandavies181/tfd/cmd/config"
 	"github.com/logandavies181/tfd/cmd/flags"
-	"github.com/logandavies181/tfd/cmd/git"
+	"github.com/logandavies181/tfd/cmd/plan"
 	"github.com/logandavies181/tfd/cmd/run"
+	"github.com/logandavies181/tfd/pkg/git"
 
 	"github.com/hashicorp/go-tfe"
 	"github.com/spf13/cobra"
@@ -36,7 +37,7 @@ var speculativePlanCmd = &cobra.Command{
 			Workspace:     viper.GetString("workspace"),
 		}
 
-		config := &speculativePlanConfig{
+		config := speculativePlanConfig{
 			Config: baseConfig,
 
 			Path:      viper.GetString("path"),
@@ -64,7 +65,7 @@ func init() {
 }
 
 type speculativePlanConfig struct {
-	*config.Config
+	config.Config
 
 	Path      string
 	Workspace string
@@ -73,7 +74,7 @@ type speculativePlanConfig struct {
 	mockGit bool
 }
 
-func speculativePlan(cfg *speculativePlanConfig) error {
+func speculativePlan(cfg speculativePlanConfig) error {
 	workspace, err := cfg.Client.Workspaces.Read(cfg.Ctx, cfg.Org, cfg.Workspace)
 	if err != nil {
 		return err
@@ -106,7 +107,40 @@ func speculativePlan(cfg *speculativePlanConfig) error {
 
 	fmt.Println("Created configuration version:", cv.ID)
 
-	cfg.RunStartConfig.StartRun(run.CREATE)
+		r, err := cfg.Client.Runs.Create(cfg.Ctx, tfe.RunCreateOptions{
+		Workspace:            workspace,
+		ConfigurationVersion: cv,
+	})
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(r.Plan.ID)
+
+	runUrl, err := run.FormatRunUrl(cfg.Address, cfg.Org, cfg.Workspace, r.ID)
+	if err != nil {
+		return err
+	}
+	fmt.Println("View the run in the UI:", runUrl)
+
+	planError := plan.WatchPlan(cfg.Ctx, cfg.Client, r.Plan.ID)
+	if planError != nil {
+		err, ok := planError.(plan.PlanError)
+		if !ok {
+			return err
+		}
+	}
+
+	runPlan, err := cfg.Client.Plans.Read(cfg.Ctx, r.Plan.ID)
+	if err != nil {
+		return err
+	}
+
+	if planError == nil {
+		fmt.Println(plan.FormatResourceChanges(runPlan))
+	} else {
+		fmt.Println(planError)
+	}
 
 	return nil
 }

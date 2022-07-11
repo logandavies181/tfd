@@ -3,6 +3,7 @@ package cmd
 import (
 	"testing"
 
+	"github.com/logandavies181/tfd/cmd/run"
 	"github.com/logandavies181/tfd/mocks"
 
 	"github.com/golang/mock/gomock"
@@ -101,9 +102,17 @@ func TestSpeculativePlan(t *testing.T) {
 	cfg.Client.Runs = runsMock
 	cfg.Client.Plans = plansMock
 
-	speculativePlanConfig := &speculativePlanConfig{
+	rsc := run.RunStartConfig{
+		Replace:       []string{},
+		Targets:       []string{},
+		Watch:         true,
+		Workspace:     "testWS",
+	}
+
+	speculativePlanConfig := speculativePlanConfig{
 		Config:    cfg,
 		Path:      "",
+		RunStartConfig: rsc,
 		Workspace: "testWS",
 		mockGit:   true,
 	}

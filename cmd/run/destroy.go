@@ -21,16 +21,16 @@ var destroyRunCmd = &cobra.Command{
 		config := &RunStartConfig{
 			Config: baseConfig,
 
-			AutoApply:     viper.GetBool("auto-apply"),
-			ConfigurationVersion:     viper.GetString("configuration-version"),
-			FireAndForget: viper.GetBool("fire-and-forget"),
-			Message:       viper.GetString("message"),
-			Refresh:       viper.GetBool("refresh"),
-			RefreshOnly:   viper.GetBool("refresh-only"),
-			Replace:       viper.GetStringSlice("replace"),
-			Targets:       viper.GetStringSlice("targets"),
-			Watch:         viper.GetBool("watch"),
-			Workspace:     viper.GetString("workspace"),
+			AutoApply:            viper.GetBool("auto-apply"),
+			ConfigurationVersion: viper.GetString("configuration-version"),
+			FireAndForget:        viper.GetBool("fire-and-forget"),
+			Message:              viper.GetString("message"),
+			Refresh:              viper.GetBool("refresh"),
+			RefreshOnly:          viper.GetBool("refresh-only"),
+			Replace:              viper.GetStringSlice("replace"),
+			Targets:              viper.GetStringSlice("targets"),
+			Watch:                viper.GetBool("watch"),
+			Workspace:            viper.GetString("workspace"),
 		}
 
 		return config.StartRun(DESTROY)

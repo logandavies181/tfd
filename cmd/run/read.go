@@ -41,7 +41,7 @@ func init() {
 }
 
 type readRunConfig struct {
-	*config.Config
+	config.Config
 
 	RunId     string
 	Workspace string

@@ -30,17 +30,17 @@ func addValidation(name string, validationFunc func() error) {
 	}
 }
 
-func InitializeCmd(cmd *cobra.Command) (*config.Config, error) {
+func InitializeCmd(cmd *cobra.Command) (conf config.Config, err error) {
 	viper.BindPFlags(cmd.Flags())
 
-	conf, err := config.New()
+	conf, err = config.New()
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	err = validateFlags(cmd.Name())
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	return conf, nil

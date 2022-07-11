@@ -40,7 +40,7 @@ func init() {
 }
 
 type stopRunConfig struct {
-	*config.Config
+	config.Config
 
 	Workspace string
 }

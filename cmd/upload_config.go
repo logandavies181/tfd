@@ -5,7 +5,7 @@ import (
 
 	"github.com/logandavies181/tfd/cmd/config"
 	"github.com/logandavies181/tfd/cmd/flags"
-	"github.com/logandavies181/tfd/cmd/git"
+	"github.com/logandavies181/tfd/pkg/git"
 
 	"github.com/hashicorp/go-tfe"
 	"github.com/spf13/cobra"
@@ -42,7 +42,7 @@ func init() {
 }
 
 type uploadConfigConfig struct {
-	*config.Config
+	config.Config
 
 	Path      string
 	Workspace string

@@ -20,25 +20,24 @@ type Config struct {
 	Ctx    context.Context
 }
 
-func New() (*Config, error) {
+func New() (cfg Config, err error) {
 	// TODO: add more logic for token locations
-	var cfg Config
 
-	err := viper.Unmarshal(&cfg)
+	err = viper.Unmarshal(&cfg)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	err = validateConfig(&cfg)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	clientConfig := defaultConfig()
 
 	addressUrl, err := url.Parse(viper.GetString("address"))
 	if err != nil {
-		return nil, err
+		return
 	}
 	clientConfig.Address = fmt.Sprintf("%s://%s", addressUrl.Scheme, addressUrl.Host)
 	clientConfig.BasePath = addressUrl.Path
@@ -47,13 +46,13 @@ func New() (*Config, error) {
 
 	client, err := newClientCreator{}.NewClient(clientConfig)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	cfg.Client = client
 	cfg.Ctx = context.TODO()
 
-	return &cfg, nil
+	return cfg, nil
 }
 
 // modified from https://github.com/hashicorp/go-tfe/blob/v0.18.0/tfe.go#L67

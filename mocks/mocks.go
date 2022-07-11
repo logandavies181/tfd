@@ -6,8 +6,8 @@ import (
 	"github.com/hashicorp/go-tfe"
 )
 
-func MockConfig() *config.Config {
-	return &config.Config{
+func MockConfig() config.Config {
+	return config.Config{
 		Address: "https://example.com",
 		Org:     "test",
 		Token:   "secret",

@@ -43,7 +43,7 @@ func init() {
 }
 
 type applyRunConfig struct {
-	*config.Config
+	config.Config
 
 	Watch     bool
 	Workspace string

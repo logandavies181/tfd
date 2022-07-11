@@ -6,7 +6,7 @@ import (
 	"github.com/hashicorp/go-tfe"
 )
 
-func GetConfigurationVersionById(ctx context.Context, client *tfe.Client, workspaceId, Id string) (*tfe.ConfigurationVersion, error) {
+func GetConfigurationVersionById(ctx context.Context, client tfe.Client, workspaceId, Id string) (*tfe.ConfigurationVersion, error) {
 
 	return nil, nil
 }

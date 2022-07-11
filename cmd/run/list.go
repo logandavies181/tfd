@@ -38,12 +38,10 @@ func init() {
 	RunCmd.AddCommand(listRunCmd)
 
 	flags.AddWorkspaceFlag(listRunCmd)
-
-	viper.BindPFlags(listRunCmd.Flags())
 }
 
 type listRunConfig struct {
-	*config.Config
+	config.Config
 
 	Workspace string
 }

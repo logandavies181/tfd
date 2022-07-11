@@ -22,16 +22,16 @@ var runStartCmd = &cobra.Command{
 		config := &RunStartConfig{
 			Config: baseConfig,
 
-			AutoApply:     viper.GetBool("auto-apply"),
-			ConfigurationVersion:     viper.GetString("configuration-version"),
-			FireAndForget: viper.GetBool("fire-and-forget"),
-			Message:       viper.GetString("message"),
-			Refresh:       viper.GetBool("refresh"),
-			RefreshOnly:   viper.GetBool("refresh-only"),
-			Replace:       viper.GetStringSlice("replace"),
-			Targets:       viper.GetStringSlice("targets"),
-			Watch:         viper.GetBool("watch"),
-			Workspace:     viper.GetString("workspace"),
+			AutoApply:            viper.GetBool("auto-apply"),
+			ConfigurationVersion: viper.GetString("configuration-version"),
+			FireAndForget:        viper.GetBool("fire-and-forget"),
+			Message:              viper.GetString("message"),
+			Refresh:              viper.GetBool("refresh"),
+			RefreshOnly:          viper.GetBool("refresh-only"),
+			Replace:              viper.GetStringSlice("replace"),
+			Targets:              viper.GetStringSlice("targets"),
+			Watch:                viper.GetBool("watch"),
+			Workspace:            viper.GetString("workspace"),
 		}
 
 		return config.StartRun(CREATE)
@@ -54,17 +54,17 @@ func init() {
 }
 
 type RunStartConfig struct {
-	*config.Config
+	config.Config
 
-	AutoApply     bool `mapstructure:"auto-apply"`
+	AutoApply            bool   `mapstructure:"auto-apply"`
 	ConfigurationVersion string `mapstructure:"configuration-version"`
-	FireAndForget bool `mapstructure:"fire-and-forget"`
-	IsDestroy     bool
-	Message       string
-	Refresh       bool
-	RefreshOnly   bool `mapstructure:"refresh-only"`
-	Replace       []string
-	Targets       []string
-	Watch         bool
-	Workspace     string
+	FireAndForget        bool   `mapstructure:"fire-and-forget"`
+	IsDestroy            bool
+	Message              string
+	Refresh              bool
+	RefreshOnly          bool `mapstructure:"refresh-only"`
+	Replace              []string
+	Targets              []string
+	Watch                bool
+	Workspace            string
 }
