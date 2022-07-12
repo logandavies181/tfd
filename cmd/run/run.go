@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"net/url"
 
-	cvs "github.com/logandavies181/tfd/cmd/configuration-version"
-
 	"github.com/hashicorp/go-tfe"
 	"github.com/spf13/cobra"
 )
@@ -76,7 +74,7 @@ func (cfg RunStartConfig) StartRun(runType int) error {
 
 	var cv *tfe.ConfigurationVersion
 	if cfg.ConfigurationVersion != "" {
-		cv, err = cvs.GetConfigurationVersionById(cfg.Ctx, cfg.Client, cfg.Workspace, cfg.ConfigurationVersion)
+		cv, err = cfg.Client.ConfigurationVersions.Read(cfg.Ctx, cfg.ConfigurationVersion)
 		if err != nil {
 			return err
 		}

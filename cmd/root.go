@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/logandavies181/tfd/cmd/cv"
 	"github.com/logandavies181/tfd/cmd/run"
 
 	homedir "github.com/mitchellh/go-homedir"
@@ -39,6 +40,7 @@ func Execute(semver string) {
 func init() {
 	cobra.OnInitialize(initConfig)
 
+	rootCmd.AddCommand(cv.CvCmd)
 	rootCmd.AddCommand(run.RunCmd)
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.tfd.yaml)")
