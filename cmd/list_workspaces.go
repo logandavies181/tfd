@@ -40,7 +40,7 @@ func listWorkspaces(cfg config.Config) error {
 			},
 		})
 		if err != nil {
-			return true, err
+			return false, err
 		}
 		if workspaceListResp.Pagination != nil {
 			*pg = *workspaceListResp.Pagination

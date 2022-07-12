@@ -25,24 +25,11 @@ var speculativePlanCmd = &cobra.Command{
 			return err
 		}
 
-		rsc := run.RunStartConfig{
-			AutoApply:     viper.GetBool("auto-apply"),
-			FireAndForget: viper.GetBool("fire-and-forget"),
-			Message:       viper.GetString("message"),
-			Refresh:       viper.GetBool("refresh"),
-			RefreshOnly:   viper.GetBool("refresh-only"),
-			Replace:       viper.GetStringSlice("replace"),
-			Targets:       viper.GetStringSlice("targets"),
-			Watch:         viper.GetBool("watch"),
-			Workspace:     viper.GetString("workspace"),
-		}
-
 		config := speculativePlanConfig{
 			Config: baseConfig,
 
-			Path:      viper.GetString("path"),
-			Workspace: viper.GetString("workspace"),
-			RunStartConfig: rsc,
+			Path:           viper.GetString("path"),
+			Workspace:      viper.GetString("workspace"),
 		}
 
 		return speculativePlan(config)
@@ -67,9 +54,8 @@ func init() {
 type speculativePlanConfig struct {
 	config.Config
 
-	Path      string
-	Workspace string
-	RunStartConfig       run.RunStartConfig
+	Path           string
+	Workspace      string
 
 	mockGit bool
 }
@@ -107,7 +93,7 @@ func speculativePlan(cfg speculativePlanConfig) error {
 
 	fmt.Println("Created configuration version:", cv.ID)
 
-		r, err := cfg.Client.Runs.Create(cfg.Ctx, tfe.RunCreateOptions{
+	r, err := cfg.Client.Runs.Create(cfg.Ctx, tfe.RunCreateOptions{
 		Workspace:            workspace,
 		ConfigurationVersion: cv,
 	})

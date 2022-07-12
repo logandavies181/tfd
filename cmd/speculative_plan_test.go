@@ -102,19 +102,11 @@ func TestSpeculativePlan(t *testing.T) {
 	cfg.Client.Runs = runsMock
 	cfg.Client.Plans = plansMock
 
-	rsc := run.RunStartConfig{
-		Replace:       []string{},
-		Targets:       []string{},
-		Watch:         true,
-		Workspace:     "testWS",
-	}
-
 	speculativePlanConfig := speculativePlanConfig{
-		Config:    cfg,
-		Path:      "",
-		RunStartConfig: rsc,
-		Workspace: "testWS",
-		mockGit:   true,
+		Config:         cfg,
+		Path:           "",
+		Workspace:      "testWS",
+		mockGit:        true,
 	}
 
 	err := speculativePlan(speculativePlanConfig)

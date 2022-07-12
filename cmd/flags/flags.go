@@ -29,7 +29,7 @@ func AddPathFlag(cmd *cobra.Command) {
 }
 
 func AddRefreshFlag(cmd *cobra.Command) {
-	cmd.Flags().BoolP("refresh", "", false, "Determines if the run should update the state prior to checking for differences")
+	cmd.Flags().BoolP("refresh", "", true, "Determines if the run should update the state prior to checking for differences")
 }
 
 func AddRefreshOnlyFlag(cmd *cobra.Command) {

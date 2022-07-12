@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/url"
 
-	//cvs "github.com/logandavies181/tfd/cmd/configuration-version"
+	cvs "github.com/logandavies181/tfd/cmd/configuration-version"
 
 	"github.com/hashicorp/go-tfe"
 	"github.com/spf13/cobra"
@@ -74,21 +74,19 @@ func (cfg RunStartConfig) StartRun(runType int) error {
 		return fmt.Errorf("Run type must be run.destroy or run.create. Unknown enum: %v", runType)
 	}
 
-	/*
-		var cv tfe.ConfigurationVersion
-		if cfg.ConfigurationVersion != "" {
-			cv, err = cvs.GetConfigurationVersionById(cfg.Ctx, cfg.Client, cfg.Workspace, cfg.ConfigurationVersion)
-			if err != nil {
-				return err
-			}
+	var cv *tfe.ConfigurationVersion
+	if cfg.ConfigurationVersion != "" {
+		cv, err = cvs.GetConfigurationVersionById(cfg.Ctx, cfg.Client, cfg.Workspace, cfg.ConfigurationVersion)
+		if err != nil {
+			return err
 		}
-	*/
+	}
 
 	r, err := cfg.Client.Runs.Create(
 		cfg.Ctx,
 		tfe.RunCreateOptions{
 			AutoApply: &cfg.FireAndForget,
-			//		ConfigurationVersion: cv,
+			ConfigurationVersion: cv,
 			IsDestroy:    &isDestroy,
 			Message:      &cfg.Message,
 			Refresh:      &cfg.Refresh,
@@ -109,6 +107,13 @@ func (cfg RunStartConfig) StartRun(runType int) error {
 		if err != nil {
 			return err
 		}
+	} else {
+		runUrl, err := FormatRunUrl(cfg.Address, cfg.Org, workspace.Name, r.ID)
+		if err != nil {
+			return err
+		}
+		fmt.Println("View the plan in the UI:", runUrl)
+
 	}
 
 	return nil

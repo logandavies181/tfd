@@ -20,7 +20,10 @@ func TestListWorkspacesOnePage(t *testing.T) {
 		EXPECT().
 		List(gomock.Any(), "test", gomock.Any()).
 		Return(&tfe.WorkspaceList{
-			Pagination: nil,
+			Pagination: &tfe.Pagination{
+				CurrentPage: 1,
+				TotalPages:  1,
+			},
 			Items: []*tfe.Workspace{
 				{
 					Name: "one",
