@@ -20,7 +20,10 @@ func TestListWorkspacesOnePage(t *testing.T) {
 		EXPECT().
 		List(gomock.Any(), "test", gomock.Any()).
 		Return(&tfe.WorkspaceList{
-			Pagination: nil,
+			Pagination: &tfe.Pagination{
+				CurrentPage: 1,
+				TotalPages:  1,
+			},
 			Items: []*tfe.Workspace{
 				{
 					Name: "one",
@@ -44,7 +47,7 @@ func TestListWorkspacesManyPages(t *testing.T) {
 
 	gomock.InOrder(
 		m.EXPECT().
-			List(gomock.Any(), "test", tfe.WorkspaceListOptions{
+			List(gomock.Any(), "test", &tfe.WorkspaceListOptions{
 				ListOptions: tfe.ListOptions{
 					PageNumber: 1,
 				},
@@ -62,7 +65,7 @@ func TestListWorkspacesManyPages(t *testing.T) {
 				},
 			}, nil),
 		m.EXPECT().
-			List(gomock.Any(), "test", tfe.WorkspaceListOptions{
+			List(gomock.Any(), "test", &tfe.WorkspaceListOptions{
 				ListOptions: tfe.ListOptions{
 					PageNumber: 2,
 				},
@@ -80,7 +83,7 @@ func TestListWorkspacesManyPages(t *testing.T) {
 				},
 			}, nil),
 		m.EXPECT().
-			List(gomock.Any(), "test", tfe.WorkspaceListOptions{
+			List(gomock.Any(), "test", &tfe.WorkspaceListOptions{
 				ListOptions: tfe.ListOptions{
 					PageNumber: 3,
 				},

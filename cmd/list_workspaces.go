@@ -6,6 +6,7 @@ import (
 	"github.com/logandavies181/tfd/cmd/config"
 	"github.com/logandavies181/tfd/cmd/flags"
 	"github.com/logandavies181/tfd/cmd/workspace"
+	"github.com/logandavies181/tfd/pkg/pagination"
 
 	"github.com/hashicorp/go-tfe"
 	"github.com/spf13/cobra"
@@ -30,28 +31,25 @@ func init() {
 	rootCmd.AddCommand(listWorkspacesCmd)
 }
 
-func listWorkspaces(cfg *config.Config) error {
+func listWorkspaces(cfg config.Config) error {
 	var workspaces []*tfe.Workspace
-	pagination := &tfe.Pagination{
-		NextPage:   1,
-		TotalPages: -1,
-	}
-	for {
-		if pagination == nil || pagination.CurrentPage == pagination.TotalPages {
-			break
-		}
-		workspaceListResp, err := cfg.Client.Workspaces.List(cfg.Ctx, cfg.Org, tfe.WorkspaceListOptions{
+	pagination.WithPagination(func(pg *tfe.Pagination) (bool, error) {
+		workspaceListResp, err := cfg.Client.Workspaces.List(cfg.Ctx, cfg.Org, &tfe.WorkspaceListOptions{
 			ListOptions: tfe.ListOptions{
-				PageNumber: pagination.NextPage,
+				PageNumber: pg.NextPage,
 			},
 		})
 		if err != nil {
-			return err
+			return false, err
 		}
-		pagination = workspaceListResp.Pagination
+		if workspaceListResp.Pagination != nil {
+			*pg = *workspaceListResp.Pagination
+		}
 
 		workspaces = append(workspaces, workspaceListResp.Items...)
-	}
+
+		return false, nil
+	})
 
 	workspace.SortWorkspacesByName(workspaces)
 	for _, ws := range workspaces {

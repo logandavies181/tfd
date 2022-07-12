@@ -38,12 +38,10 @@ func init() {
 	RunCmd.AddCommand(listRunCmd)
 
 	flags.AddWorkspaceFlag(listRunCmd)
-
-	viper.BindPFlags(listRunCmd.Flags())
 }
 
 type listRunConfig struct {
-	*config.Config
+	config.Config
 
 	Workspace string
 }
@@ -57,7 +55,7 @@ func listRun(cfg *listRunConfig) error {
 	runList, err := cfg.Client.Runs.List(
 		cfg.Ctx,
 		workspace.ID,
-		tfe.RunListOptions{})
+		&tfe.RunListOptions{})
 	if err != nil {
 		return err
 	}
@@ -91,7 +89,7 @@ func sortRunsByCreateTime(runs []*tfe.Run) {
 }
 
 func getConfirmableRunByWorkspaceId(client *tfe.Client, ctx context.Context, workspaceId string) (string, error) {
-	runList, err := client.Runs.List(ctx, workspaceId, tfe.RunListOptions{})
+	runList, err := client.Runs.List(ctx, workspaceId, &tfe.RunListOptions{})
 	if err != nil {
 		return "", err
 	}

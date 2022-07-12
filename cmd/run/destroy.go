@@ -1,12 +1,8 @@
 package run
 
 import (
-	"fmt"
-
-	"github.com/logandavies181/tfd/cmd/config"
 	"github.com/logandavies181/tfd/cmd/flags"
 
-	"github.com/hashicorp/go-tfe"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -22,63 +18,36 @@ var destroyRunCmd = &cobra.Command{
 			return err
 		}
 
-		config := &destroyRunConfig{
+		config := &RunStartConfig{
 			Config: baseConfig,
 
-			AutoApply: viper.GetBool("auto-apply"),
-			Watch:     viper.GetBool("watch"),
-			Workspace: viper.GetString("workspace"),
+			AutoApply:            viper.GetBool("auto-apply"),
+			ConfigurationVersion: viper.GetString("configuration-version"),
+			FireAndForget:        viper.GetBool("fire-and-forget"),
+			Message:              viper.GetString("message"),
+			Refresh:              viper.GetBool("refresh"),
+			RefreshOnly:          viper.GetBool("refresh-only"),
+			Replace:              viper.GetStringSlice("replace"),
+			Targets:              viper.GetStringSlice("targets"),
+			Watch:                viper.GetBool("watch"),
+			Workspace:            viper.GetString("workspace"),
 		}
 
-		return destroyRun(config)
+		return config.StartRun(DESTROY)
 	},
 }
 
 func init() {
 	RunCmd.AddCommand(destroyRunCmd)
 
-	destroyRunCmd.Flags().BoolP("auto-apply", "a", false, "Automatically apply the plan once finished")
-	destroyRunCmd.Flags().BoolP("watch", "", false, "Wait for the run to finish")
-	destroyRunCmd.Flags().StringP("workspace", "w", "", "Terraform Cloud workspace to interact with")
-
-	viper.BindPFlags(destroyRunCmd.Flags())
-}
-
-type destroyRunConfig struct {
-	*config.Config
-
-	AutoApply bool `mapstructure:"auto-apply"`
-	Watch     bool
-	Workspace string
-}
-
-func destroyRun(cfg *destroyRunConfig) error {
-	workspace, err := cfg.Client.Workspaces.Read(cfg.Ctx, cfg.Org, cfg.Workspace)
-	if err != nil {
-		return err
-	}
-
-	isDestroy := true
-
-	r, err := cfg.Client.Runs.Create(
-		cfg.Ctx,
-		tfe.RunCreateOptions{
-			IsDestroy: &isDestroy,
-			Workspace: workspace,
-		},
-	)
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(r.ID)
-
-	if cfg.Watch || cfg.AutoApply {
-		err = watchAndAutoApplyRun(cfg.Ctx, cfg.Client, cfg.Org, workspace.Name, r, cfg.AutoApply, cfg.Address)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
+	flags.AddAutoApplyFlag(destroyRunCmd)
+	flags.AddConfigurationVersionFlag(destroyRunCmd)
+	flags.AddFireAndForgetFlag(destroyRunCmd)
+	flags.AddMessageFlag(destroyRunCmd)
+	flags.AddRefreshFlag(destroyRunCmd)
+	flags.AddRefreshOnlyFlag(destroyRunCmd)
+	flags.AddReplaceFlag(destroyRunCmd)
+	flags.AddTargetsFlag(destroyRunCmd)
+	flags.AddWatchFlag(destroyRunCmd)
+	flags.AddWorkspaceFlag(destroyRunCmd)
 }

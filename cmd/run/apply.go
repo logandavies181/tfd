@@ -43,7 +43,7 @@ func init() {
 }
 
 type applyRunConfig struct {
-	*config.Config
+	config.Config
 
 	Watch     bool
 	Workspace string
@@ -68,7 +68,7 @@ func applyRun(cfg *applyRunConfig) error {
 	runList, err := cfg.Client.Runs.List(
 		cfg.Ctx,
 		workspace.ID,
-		tfe.RunListOptions{})
+		&tfe.RunListOptions{})
 	if err != nil {
 		return err
 	}

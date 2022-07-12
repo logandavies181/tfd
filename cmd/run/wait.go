@@ -17,17 +17,17 @@ func watchAndAutoApplyRun(ctx context.Context, client *tfe.Client, org, workspac
 		return fmt.Errorf("Fatal: Run is nil")
 	}
 
-	// check if there's a queue
-	err := waitForQueueStatus(ctx, client, org, workspaceName, r.ID)
-	if err != nil {
-		return err
-	}
-
 	runUrl, err := FormatRunUrl(address, org, workspaceName, r.ID)
 	if err != nil {
 		return err
 	}
 	fmt.Println("View the plan in the UI:", runUrl)
+
+	// check if there's a queue
+	err = waitForQueueStatus(ctx, client, org, workspaceName, r.ID)
+	if err != nil {
+		return err
+	}
 
 	// r.Plan seems to be nil when we get it from the current workspace??
 	var planId string
@@ -128,7 +128,7 @@ func watchRun(ctx context.Context, client *tfe.Client, runId string) error {
 			}
 			return nil
 		} else {
-			time.Sleep(10 * time.Second)
+			time.Sleep(5 * time.Second)
 		}
 	}
 }

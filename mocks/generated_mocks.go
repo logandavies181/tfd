@@ -36,6 +36,20 @@ func (m *MockConfigurationVersions) EXPECT() *MockConfigurationVersionsMockRecor
 	return m.recorder
 }
 
+// Archive mocks base method.
+func (m *MockConfigurationVersions) Archive(ctx context.Context, cvID string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Archive", ctx, cvID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Archive indicates an expected call of Archive.
+func (mr *MockConfigurationVersionsMockRecorder) Archive(ctx, cvID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Archive", reflect.TypeOf((*MockConfigurationVersions)(nil).Archive), ctx, cvID)
+}
+
 // Create mocks base method.
 func (m *MockConfigurationVersions) Create(ctx context.Context, workspaceID string, options tfe.ConfigurationVersionCreateOptions) (*tfe.ConfigurationVersion, error) {
 	m.ctrl.T.Helper()
@@ -51,8 +65,23 @@ func (mr *MockConfigurationVersionsMockRecorder) Create(ctx, workspaceID, option
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockConfigurationVersions)(nil).Create), ctx, workspaceID, options)
 }
 
+// Download mocks base method.
+func (m *MockConfigurationVersions) Download(ctx context.Context, cvID string) ([]byte, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Download", ctx, cvID)
+	ret0, _ := ret[0].([]byte)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Download indicates an expected call of Download.
+func (mr *MockConfigurationVersionsMockRecorder) Download(ctx, cvID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Download", reflect.TypeOf((*MockConfigurationVersions)(nil).Download), ctx, cvID)
+}
+
 // List mocks base method.
-func (m *MockConfigurationVersions) List(ctx context.Context, workspaceID string, options tfe.ConfigurationVersionListOptions) (*tfe.ConfigurationVersionList, error) {
+func (m *MockConfigurationVersions) List(ctx context.Context, workspaceID string, options *tfe.ConfigurationVersionListOptions) (*tfe.ConfigurationVersionList, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "List", ctx, workspaceID, options)
 	ret0, _ := ret[0].(*tfe.ConfigurationVersionList)
@@ -79,6 +108,21 @@ func (m *MockConfigurationVersions) Read(ctx context.Context, cvID string) (*tfe
 func (mr *MockConfigurationVersionsMockRecorder) Read(ctx, cvID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Read", reflect.TypeOf((*MockConfigurationVersions)(nil).Read), ctx, cvID)
+}
+
+// ReadWithOptions mocks base method.
+func (m *MockConfigurationVersions) ReadWithOptions(ctx context.Context, cvID string, options *tfe.ConfigurationVersionReadOptions) (*tfe.ConfigurationVersion, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ReadWithOptions", ctx, cvID, options)
+	ret0, _ := ret[0].(*tfe.ConfigurationVersion)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ReadWithOptions indicates an expected call of ReadWithOptions.
+func (mr *MockConfigurationVersionsMockRecorder) ReadWithOptions(ctx, cvID, options interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReadWithOptions", reflect.TypeOf((*MockConfigurationVersions)(nil).ReadWithOptions), ctx, cvID, options)
 }
 
 // Upload mocks base method.
@@ -118,21 +162,6 @@ func (m *MockPlans) EXPECT() *MockPlansMockRecorder {
 	return m.recorder
 }
 
-// JSONOutput mocks base method.
-func (m *MockPlans) JSONOutput(ctx context.Context, planID string) ([]byte, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "JSONOutput", ctx, planID)
-	ret0, _ := ret[0].([]byte)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// JSONOutput indicates an expected call of JSONOutput.
-func (mr *MockPlansMockRecorder) JSONOutput(ctx, planID interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "JSONOutput", reflect.TypeOf((*MockPlans)(nil).JSONOutput), ctx, planID)
-}
-
 // Logs mocks base method.
 func (m *MockPlans) Logs(ctx context.Context, planID string) (io.Reader, error) {
 	m.ctrl.T.Helper()
@@ -161,6 +190,21 @@ func (m *MockPlans) Read(ctx context.Context, planID string) (*tfe.Plan, error) 
 func (mr *MockPlansMockRecorder) Read(ctx, planID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Read", reflect.TypeOf((*MockPlans)(nil).Read), ctx, planID)
+}
+
+// ReadJSONOutput mocks base method.
+func (m *MockPlans) ReadJSONOutput(ctx context.Context, planID string) ([]byte, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ReadJSONOutput", ctx, planID)
+	ret0, _ := ret[0].([]byte)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ReadJSONOutput indicates an expected call of ReadJSONOutput.
+func (mr *MockPlansMockRecorder) ReadJSONOutput(ctx, planID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReadJSONOutput", reflect.TypeOf((*MockPlans)(nil).ReadJSONOutput), ctx, planID)
 }
 
 // MockRuns is a mock of Runs interface.
@@ -258,7 +302,7 @@ func (mr *MockRunsMockRecorder) ForceCancel(ctx, runID, options interface{}) *go
 }
 
 // List mocks base method.
-func (m *MockRuns) List(ctx context.Context, workspaceID string, options tfe.RunListOptions) (*tfe.RunList, error) {
+func (m *MockRuns) List(ctx context.Context, workspaceID string, options *tfe.RunListOptions) (*tfe.RunList, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "List", ctx, workspaceID, options)
 	ret0, _ := ret[0].(*tfe.RunList)
@@ -339,6 +383,20 @@ func (mr *MockWorkspacesMockRecorder) AddRemoteStateConsumers(ctx, workspaceID, 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddRemoteStateConsumers", reflect.TypeOf((*MockWorkspaces)(nil).AddRemoteStateConsumers), ctx, workspaceID, options)
 }
 
+// AddTags mocks base method.
+func (m *MockWorkspaces) AddTags(ctx context.Context, workspaceID string, options tfe.WorkspaceAddTagsOptions) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddTags", ctx, workspaceID, options)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// AddTags indicates an expected call of AddTags.
+func (mr *MockWorkspacesMockRecorder) AddTags(ctx, workspaceID, options interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddTags", reflect.TypeOf((*MockWorkspaces)(nil).AddTags), ctx, workspaceID, options)
+}
+
 // AssignSSHKey mocks base method.
 func (m *MockWorkspaces) AssignSSHKey(ctx context.Context, workspaceID string, options tfe.WorkspaceAssignSSHKeyOptions) (*tfe.Workspace, error) {
 	m.ctrl.T.Helper()
@@ -413,7 +471,7 @@ func (mr *MockWorkspacesMockRecorder) ForceUnlock(ctx, workspaceID interface{}) 
 }
 
 // List mocks base method.
-func (m *MockWorkspaces) List(ctx context.Context, organization string, options tfe.WorkspaceListOptions) (*tfe.WorkspaceList, error) {
+func (m *MockWorkspaces) List(ctx context.Context, organization string, options *tfe.WorkspaceListOptions) (*tfe.WorkspaceList, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "List", ctx, organization, options)
 	ret0, _ := ret[0].(*tfe.WorkspaceList)
@@ -425,6 +483,36 @@ func (m *MockWorkspaces) List(ctx context.Context, organization string, options 
 func (mr *MockWorkspacesMockRecorder) List(ctx, organization, options interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockWorkspaces)(nil).List), ctx, organization, options)
+}
+
+// ListRemoteStateConsumers mocks base method.
+func (m *MockWorkspaces) ListRemoteStateConsumers(ctx context.Context, workspaceID string, options *tfe.RemoteStateConsumersListOptions) (*tfe.WorkspaceList, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListRemoteStateConsumers", ctx, workspaceID, options)
+	ret0, _ := ret[0].(*tfe.WorkspaceList)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListRemoteStateConsumers indicates an expected call of ListRemoteStateConsumers.
+func (mr *MockWorkspacesMockRecorder) ListRemoteStateConsumers(ctx, workspaceID, options interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRemoteStateConsumers", reflect.TypeOf((*MockWorkspaces)(nil).ListRemoteStateConsumers), ctx, workspaceID, options)
+}
+
+// ListTags mocks base method.
+func (m *MockWorkspaces) ListTags(ctx context.Context, workspaceID string, options *tfe.WorkspaceTagListOptions) (*tfe.TagList, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListTags", ctx, workspaceID, options)
+	ret0, _ := ret[0].(*tfe.TagList)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListTags indicates an expected call of ListTags.
+func (mr *MockWorkspacesMockRecorder) ListTags(ctx, workspaceID, options interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListTags", reflect.TypeOf((*MockWorkspaces)(nil).ListTags), ctx, workspaceID, options)
 }
 
 // Lock mocks base method.
@@ -472,6 +560,36 @@ func (mr *MockWorkspacesMockRecorder) ReadByID(ctx, workspaceID interface{}) *go
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReadByID", reflect.TypeOf((*MockWorkspaces)(nil).ReadByID), ctx, workspaceID)
 }
 
+// ReadByIDWithOptions mocks base method.
+func (m *MockWorkspaces) ReadByIDWithOptions(ctx context.Context, workspaceID string, options *tfe.WorkspaceReadOptions) (*tfe.Workspace, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ReadByIDWithOptions", ctx, workspaceID, options)
+	ret0, _ := ret[0].(*tfe.Workspace)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ReadByIDWithOptions indicates an expected call of ReadByIDWithOptions.
+func (mr *MockWorkspacesMockRecorder) ReadByIDWithOptions(ctx, workspaceID, options interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReadByIDWithOptions", reflect.TypeOf((*MockWorkspaces)(nil).ReadByIDWithOptions), ctx, workspaceID, options)
+}
+
+// ReadWithOptions mocks base method.
+func (m *MockWorkspaces) ReadWithOptions(ctx context.Context, organization, workspace string, options *tfe.WorkspaceReadOptions) (*tfe.Workspace, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ReadWithOptions", ctx, organization, workspace, options)
+	ret0, _ := ret[0].(*tfe.Workspace)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ReadWithOptions indicates an expected call of ReadWithOptions.
+func (mr *MockWorkspacesMockRecorder) ReadWithOptions(ctx, organization, workspace, options interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReadWithOptions", reflect.TypeOf((*MockWorkspaces)(nil).ReadWithOptions), ctx, organization, workspace, options)
+}
+
 // Readme mocks base method.
 func (m *MockWorkspaces) Readme(ctx context.Context, workspaceID string) (io.Reader, error) {
 	m.ctrl.T.Helper()
@@ -487,21 +605,6 @@ func (mr *MockWorkspacesMockRecorder) Readme(ctx, workspaceID interface{}) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Readme", reflect.TypeOf((*MockWorkspaces)(nil).Readme), ctx, workspaceID)
 }
 
-// RemoteStateConsumers mocks base method.
-func (m *MockWorkspaces) RemoteStateConsumers(ctx context.Context, workspaceID string) (*tfe.WorkspaceList, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "RemoteStateConsumers", ctx, workspaceID)
-	ret0, _ := ret[0].(*tfe.WorkspaceList)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// RemoteStateConsumers indicates an expected call of RemoteStateConsumers.
-func (mr *MockWorkspacesMockRecorder) RemoteStateConsumers(ctx, workspaceID interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoteStateConsumers", reflect.TypeOf((*MockWorkspaces)(nil).RemoteStateConsumers), ctx, workspaceID)
-}
-
 // RemoveRemoteStateConsumers mocks base method.
 func (m *MockWorkspaces) RemoveRemoteStateConsumers(ctx context.Context, workspaceID string, options tfe.WorkspaceRemoveRemoteStateConsumersOptions) error {
 	m.ctrl.T.Helper()
@@ -514,6 +617,20 @@ func (m *MockWorkspaces) RemoveRemoteStateConsumers(ctx context.Context, workspa
 func (mr *MockWorkspacesMockRecorder) RemoveRemoteStateConsumers(ctx, workspaceID, options interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveRemoteStateConsumers", reflect.TypeOf((*MockWorkspaces)(nil).RemoveRemoteStateConsumers), ctx, workspaceID, options)
+}
+
+// RemoveTags mocks base method.
+func (m *MockWorkspaces) RemoveTags(ctx context.Context, workspaceID string, options tfe.WorkspaceRemoveTagsOptions) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RemoveTags", ctx, workspaceID, options)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// RemoveTags indicates an expected call of RemoveTags.
+func (mr *MockWorkspacesMockRecorder) RemoveTags(ctx, workspaceID, options interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveTags", reflect.TypeOf((*MockWorkspaces)(nil).RemoveTags), ctx, workspaceID, options)
 }
 
 // RemoveVCSConnection mocks base method.
