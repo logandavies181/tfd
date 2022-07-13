@@ -7,6 +7,7 @@ import (
 
 	"github.com/logandavies181/tfd/cmd/config"
 	"github.com/logandavies181/tfd/cmd/flags"
+	"github.com/logandavies181/tfd/pkg/pagination"
 
 	"github.com/hashicorp/go-tfe"
 	"github.com/spf13/cobra"
@@ -27,6 +28,7 @@ var listRunCmd = &cobra.Command{
 		config := &listRunConfig{
 			Config: baseConfig,
 
+			MaxItems: viper.GetInt("max-items"),
 			Workspace: viper.GetString("workspace"),
 		}
 
@@ -37,12 +39,14 @@ var listRunCmd = &cobra.Command{
 func init() {
 	RunCmd.AddCommand(listRunCmd)
 
+	flags.AddMaxItemsFlag(listRunCmd)
 	flags.AddWorkspaceFlag(listRunCmd)
 }
 
 type listRunConfig struct {
 	config.Config
 
+	MaxItems  int `mapstructure:"max-items"`
 	Workspace string
 }
 
@@ -52,16 +56,30 @@ func listRun(cfg *listRunConfig) error {
 		return err
 	}
 
-	runList, err := cfg.Client.Runs.List(
-		cfg.Ctx,
-		workspace.ID,
-		&tfe.RunListOptions{})
+	var runs []*tfe.Run
+	err = pagination.WithPagination(func(pg *tfe.Pagination) (bool, error) {
+		runList, err := cfg.Client.Runs.List(
+			cfg.Ctx,
+			workspace.ID,
+			&tfe.RunListOptions{})
+		if err != nil {
+			return false, err
+		}
+
+		runs = append(runs, runList.Items...)
+		if len(runs) >= cfg.MaxItems {
+			runs = runs[:cfg.MaxItems]
+			return true, nil
+		}
+
+		*pg = *runList.Pagination
+
+		return false, nil
+	})
 	if err != nil {
 		return err
 	}
 
-	// TODO: truncate the list and handle pagination
-	runs := runList.Items
 	sortRunsByCreateTime(runs)
 	for _, r := range runs {
 		fmt.Printf("%s\t%s\t%s\n", r.CreatedAt.Format("Jan 2 15:04:05"), r.ID, r.Status)

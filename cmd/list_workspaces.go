@@ -33,7 +33,7 @@ func init() {
 
 func listWorkspaces(cfg config.Config) error {
 	var workspaces []*tfe.Workspace
-	pagination.WithPagination(func(pg *tfe.Pagination) (bool, error) {
+	err := pagination.WithPagination(func(pg *tfe.Pagination) (bool, error) {
 		workspaceListResp, err := cfg.Client.Workspaces.List(cfg.Ctx, cfg.Org, &tfe.WorkspaceListOptions{
 			ListOptions: tfe.ListOptions{
 				PageNumber: pg.NextPage,
@@ -50,6 +50,9 @@ func listWorkspaces(cfg config.Config) error {
 
 		return false, nil
 	})
+	if err != nil {
+		return err
+	}
 
 	workspace.SortWorkspacesByName(workspaces)
 	for _, ws := range workspaces {

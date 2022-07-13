@@ -3,8 +3,11 @@ package cv
 import (
 	"fmt"
 
+	"github.com/hashicorp/go-tfe"
 	"github.com/logandavies181/tfd/cmd/config"
 	"github.com/logandavies181/tfd/cmd/flags"
+	"github.com/logandavies181/tfd/pkg/pagination"
+
 	//"github.com/logandavies181/tfd/pkg/pagination"
 
 	//"github.com/hashicorp/go-tfe"
@@ -26,6 +29,7 @@ var cvListCmd = &cobra.Command{
 		config := cvListConfig{
 			Config: baseConfig,
 
+			MaxItems: viper.GetInt("max-items"),
 			Workspace: viper.GetString("workspace"),
 		}
 
@@ -36,12 +40,14 @@ var cvListCmd = &cobra.Command{
 func init() {
 	CvCmd.AddCommand(cvListCmd)
 
+	flags.AddMaxItemsFlag(cvListCmd)
 	flags.AddWorkspaceFlag(cvListCmd)
 }
 
 type cvListConfig struct {
 	config.Config
 
+	MaxItems  int `mapstructure:"max-items"`
 	Workspace string
 }
 
@@ -51,13 +57,30 @@ func cvList(cfg cvListConfig) error {
 		return fmt.Errorf("Could not read workspace Id: %v", err)
 	}
 
-	cvl, err := cfg.Client.ConfigurationVersions.List(cfg.Ctx, workspace.ID, nil)
+	var cvs []*tfe.ConfigurationVersion
+	err = pagination.WithPagination(func(pg *tfe.Pagination) (bool, error) {
+		cvl, err := cfg.Client.ConfigurationVersions.List(cfg.Ctx, workspace.ID, nil)
+		if err != nil {
+			return false, fmt.Errorf("Could not list configuration versions: %v", err)
+		}
+
+		cvs = append(cvs, cvl.Items...)
+
+		if len(cvs) >= cfg.MaxItems {
+			cvs = cvs[:cfg.MaxItems]
+			return true, nil
+		}
+
+		*pg = *cvl.Pagination
+
+		return false, nil
+	})
 	if err != nil {
-		return fmt.Errorf("Could not list configuration versions: %v", err)
+		return err
 	}
 
-	for _, v := range cvl.Items {
-		fmt.Println(v.ID)
+	for _, c := range cvs {
+		fmt.Println(c.ID)
 	}
 
 	return nil
