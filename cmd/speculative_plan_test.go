@@ -3,7 +3,6 @@ package cmd
 import (
 	"testing"
 
-	"github.com/logandavies181/tfd/cmd/run"
 	"github.com/logandavies181/tfd/mocks"
 
 	"github.com/golang/mock/gomock"

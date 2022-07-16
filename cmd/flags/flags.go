@@ -20,6 +20,10 @@ func AddFireAndForgetFlag(cmd *cobra.Command) {
 		"Non-interactively apply the plan once finished. Warning: this will still auto apply even if tfd exits. Use --auto-apply instead for safety")
 }
 
+func AddMaxItemsFlag(cmd *cobra.Command) {
+	cmd.Flags().UintP("max-items", "", 10, "Max number of items to fetch")
+}
+
 func AddMessageFlag(cmd *cobra.Command) {
 	cmd.Flags().StringP("message", "m", "", "Specifies the reason for the current action")
 }
