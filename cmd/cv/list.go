@@ -3,14 +3,11 @@ package cv
 import (
 	"fmt"
 
-	"github.com/hashicorp/go-tfe"
 	"github.com/logandavies181/tfd/cmd/config"
 	"github.com/logandavies181/tfd/cmd/flags"
 	"github.com/logandavies181/tfd/pkg/pagination"
 
-	//"github.com/logandavies181/tfd/pkg/pagination"
-
-	//"github.com/hashicorp/go-tfe"
+	"github.com/hashicorp/go-tfe"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )

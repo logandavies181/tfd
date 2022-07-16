@@ -1,6 +1,8 @@
 package mocks
 
 import (
+	"os"
+
 	"github.com/logandavies181/tfd/cmd/config"
 
 	"github.com/hashicorp/go-tfe"
@@ -36,4 +38,26 @@ type Runs interface {
 
 type Workspaces interface {
 	tfe.Workspaces
+}
+
+func WithMockedFile(f *os.File, work func(f *os.File)) {
+	oldFile := new(os.File)
+	*oldFile = *f
+
+	mockFile, err := os.CreateTemp("", "")
+	if err != nil {
+		panic(err)
+	}
+	*f = *mockFile
+
+	defer func() {
+		*f = *oldFile
+
+		err := os.Remove(mockFile.Name())
+		if err != nil {
+			panic(err)
+		}
+	}()
+
+	work(mockFile)
 }

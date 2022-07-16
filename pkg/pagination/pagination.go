@@ -11,10 +11,12 @@ import (
 // early by returning (true, nil)
 func WithPagination(work func(pg *tfe.Pagination) (bool, error)) error {
 	pg := &tfe.Pagination{
+		CurrentPage: 0,
 		NextPage:   1,
 		TotalPages: -1,
 	}
 	prevPg := tfe.Pagination{
+		CurrentPage: 0,
 		NextPage:   1,
 		TotalPages: -1,
 	}
