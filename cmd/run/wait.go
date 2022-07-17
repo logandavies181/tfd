@@ -10,6 +10,9 @@ import (
 	"github.com/hashicorp/go-tfe"
 )
 
+// overridden in tests to speed them up
+var PollingIntervalSeconds time.Duration = 5
+
 // watchAndAutoApplyRun waits for a run to plan and optionally auto-applies it, waiting for the apply to finish if so.
 // It will return an error if it detects a queue on the workspace
 func watchAndAutoApplyRun(ctx context.Context, client *tfe.Client, org, workspaceName string, r *tfe.Run, autoApply bool, address string) error {
@@ -83,7 +86,7 @@ func watchAndAutoApplyRun(ctx context.Context, client *tfe.Client, org, workspac
 			} else {
 				break
 			}
-			time.Sleep(5 * time.Second)
+			time.Sleep(PollingIntervalSeconds)
 		}
 
 		fmt.Println("Run confirmed")
@@ -94,16 +97,16 @@ func watchAndAutoApplyRun(ctx context.Context, client *tfe.Client, org, workspac
 			return err
 		}
 
-		r, err := client.Runs.Read(ctx, r.ID)
+		finishedRun, err := client.Runs.Read(ctx, r.ID)
 		if err != nil {
 			return err
 		}
 
-		if isRunFinished(r) {
+		if isRunFinished(finishedRun) {
 			fmt.Println("Run finished")
 
 			// Try getting Apply directly instead of using relation, which may be nil
-			appl, err := client.Applies.Read(ctx, r.Apply.ID)
+			appl, err := client.Applies.Read(ctx, finishedRun.Apply.ID)
 			if err != nil {
 				return err
 			}
@@ -128,7 +131,7 @@ func watchRun(ctx context.Context, client *tfe.Client, runId string) error {
 			}
 			return nil
 		} else {
-			time.Sleep(5 * time.Second)
+			time.Sleep(PollingIntervalSeconds)
 		}
 	}
 }
@@ -149,6 +152,7 @@ func isRunFinished(r *tfe.Run) bool {
 
 func isRunWaitingBetweenPlanAndApplying(r *tfe.Run) bool {
 	switch r.Status {
+		// some of these might not be correct
 	case tfe.RunConfirmed,
 		tfe.RunCostEstimated,
 		tfe.RunCostEstimating,
@@ -178,12 +182,7 @@ func waitForQueueStatus(ctx context.Context, client *tfe.Client, org, workspaceN
 			return err
 		}
 
-		r, err := client.Runs.Read(ctx, runId)
-		if err != nil {
-			return err
-		}
-
-		if workspace.CurrentRun.ID != r.ID {
+		if workspace.CurrentRun.ID != runId {
 			if !isRunFinished(workspace.CurrentRun) {
 				// Current run is someone else. Don't wait for queue, just exit
 				return fmt.Errorf("Workspace is currently locked by %s. "+
@@ -191,7 +190,7 @@ func waitForQueueStatus(ctx context.Context, client *tfe.Client, org, workspaceN
 					workspace.CurrentRun.ID)
 			} else {
 				// Current run isn't running and isn't us. Wait for Terraform Cloud to catch up
-				time.Sleep(5 * time.Second)
+				time.Sleep(PollingIntervalSeconds)
 			}
 		} else {
 			// We're the current run. Return now
@@ -208,7 +207,7 @@ func waitForWorkspaceToHaveCurrentRun(ctx context.Context, client *tfe.Client, o
 		}
 
 		if workspace.CurrentRun == nil {
-			time.Sleep(5 * time.Second)
+			time.Sleep(PollingIntervalSeconds)
 		} else {
 			return nil
 		}
