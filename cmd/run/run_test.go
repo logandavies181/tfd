@@ -345,6 +345,7 @@ func TestStartRun(t *testing.T) {
 		RefreshOnly: false,
 		Replace: []string{},
 		Targets: []string{},
+		Vars:    make(map[string]string),
 		Watch: false,
 		Workspace: "testWS",
 	}

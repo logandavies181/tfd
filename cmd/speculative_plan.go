@@ -47,7 +47,7 @@ func init() {
 	flags.AddRefreshFlag(speculativePlanCmd)
 	flags.AddRefreshOnlyFlag(speculativePlanCmd)
 	flags.AddReplaceFlag(speculativePlanCmd)
-	flags.AddTargetsFlag(speculativePlanCmd)
+	flags.AddTargetFlag(speculativePlanCmd)
 	flags.AddWatchFlag(speculativePlanCmd)
 }
 

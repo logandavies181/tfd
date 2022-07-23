@@ -1,0 +1,6 @@
+# v2.0.0
+
+tfd v2 removes the --no-update-workingdir flag from upload-config and removes the behaviour of setting the working directory
+for the Terraform Cloud/Enterprise Workspace
+
+More optional flags are added to the `run start` and `run destroy` commands. See `tfd run start --help` for more info

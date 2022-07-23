@@ -33,7 +33,7 @@ func AddPathFlag(cmd *cobra.Command) {
 }
 
 func AddRefreshFlag(cmd *cobra.Command) {
-	cmd.Flags().BoolP("refresh", "", true, "Determines if the run should update the state prior to checking for differences")
+	cmd.Flags().BoolP("refresh", "", true, "Determines if the run should check the state of created resources before creating plan")
 }
 
 func AddRefreshOnlyFlag(cmd *cobra.Command) {
@@ -49,9 +49,14 @@ func AddRunIdFlag(cmd *cobra.Command) {
 	cmd.Flags().StringP("run-id", "r", "", "Run ID to read")
 }
 
-func AddTargetsFlag(cmd *cobra.Command) {
-	cmd.Flags().StringSliceP("targets", "", []string{},
+func AddTargetFlag(cmd *cobra.Command) {
+	cmd.Flags().StringSliceP("target", "", []string{},
 		"EXPERIMENTAL: Specifies the list of target addresses to use for the run. Not recommended for regular use. Can be specified many times")
+}
+
+func AddVarFlag(cmd *cobra.Command) {
+	cmd.Flags().StringToStringP("var", "", make(map[string]string),
+		"EXPERIMENTAL: Sets variables for the current run, taking precedence over those set on the workspace. Can be specified many times")
 }
 
 func AddWatchFlag(cmd *cobra.Command) {

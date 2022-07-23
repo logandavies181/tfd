@@ -14,8 +14,8 @@ export TFD_ORG=myorg
 # List workspaces that you have access to in the current Org
 tfd list-workspaces
 
-# Upload local git repo to Terraform Cloud and set the Terraform Working Directory to the path, relative to git root
-tfd upload-config --path /path/to/terraform/dir --workspace myworkspace
+# Upload local git repo to Terraform Cloud
+tfd upload-config --path /path/to/project --workspace myworkspace
 
 # Start a run
 tfd run start --workspace myworkspace
@@ -32,6 +32,8 @@ tfd run apply --workspace myworkspace
 # Stop queued runs and the current run
 tfd run stop --workspace myworkspace
 ```
+
+`tfd <subcommand> --help` for more info
 
 ## Configure
 

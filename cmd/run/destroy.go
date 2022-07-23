@@ -29,6 +29,7 @@ var destroyRunCmd = &cobra.Command{
 			RefreshOnly:          viper.GetBool("refresh-only"),
 			Replace:              viper.GetStringSlice("replace"),
 			Targets:              viper.GetStringSlice("targets"),
+			Vars:                 viper.GetStringMapString("var"),
 			Watch:                viper.GetBool("watch"),
 			Workspace:            viper.GetString("workspace"),
 		}
@@ -47,7 +48,8 @@ func init() {
 	flags.AddRefreshFlag(destroyRunCmd)
 	flags.AddRefreshOnlyFlag(destroyRunCmd)
 	flags.AddReplaceFlag(destroyRunCmd)
-	flags.AddTargetsFlag(destroyRunCmd)
+	flags.AddTargetFlag(destroyRunCmd)
+	flags.AddVarFlag(destroyRunCmd)
 	flags.AddWatchFlag(destroyRunCmd)
 	flags.AddWorkspaceFlag(destroyRunCmd)
 }
