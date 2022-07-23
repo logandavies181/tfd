@@ -80,6 +80,14 @@ func (cfg runStartConfig) startRun(runType int) error {
 		}
 	}
 
+	var vars []*tfe.RunVariable
+	for k, v := range cfg.Vars {
+		vars = append(vars, &tfe.RunVariable{
+			Key: k,
+			Value: v,
+		})
+	}
+
 	r, err := cfg.Client.Runs.Create(
 		cfg.Ctx,
 		tfe.RunCreateOptions{
@@ -91,6 +99,7 @@ func (cfg runStartConfig) startRun(runType int) error {
 			RefreshOnly:  &cfg.RefreshOnly,
 			ReplaceAddrs: cfg.Replace,
 			TargetAddrs:  cfg.Targets,
+			Variables:    vars,
 			Workspace:    workspace,
 		},
 	)

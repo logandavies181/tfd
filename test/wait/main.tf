@@ -5,3 +5,6 @@ resource "null_resource" "test" {
   }
 }
 
+output "sleep_time" {
+  value = var.sleep_time
+}

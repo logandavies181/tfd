@@ -30,6 +30,7 @@ var runStartCmd = &cobra.Command{
 			RefreshOnly:          viper.GetBool("refresh-only"),
 			Replace:              viper.GetStringSlice("replace"),
 			Targets:              viper.GetStringSlice("targets"),
+			Vars:                 viper.GetStringMapString("var"),
 			Watch:                viper.GetBool("watch"),
 			Workspace:            viper.GetString("workspace"),
 		}
@@ -48,7 +49,8 @@ func init() {
 	flags.AddRefreshFlag(runStartCmd)
 	flags.AddRefreshOnlyFlag(runStartCmd)
 	flags.AddReplaceFlag(runStartCmd)
-	flags.AddTargetsFlag(runStartCmd)
+	flags.AddTargetFlag(runStartCmd)
+	flags.AddVarFlag(runStartCmd)
 	flags.AddWatchFlag(runStartCmd)
 	flags.AddWorkspaceFlag(runStartCmd)
 }
@@ -65,6 +67,7 @@ type runStartConfig struct {
 	RefreshOnly          bool `mapstructure:"refresh-only"`
 	Replace              []string
 	Targets              []string
+	Vars                 map[string]string
 	Watch                bool
 	Workspace            string
 }
