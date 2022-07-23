@@ -18,7 +18,7 @@ var destroyRunCmd = &cobra.Command{
 			return err
 		}
 
-		config := &RunStartConfig{
+		config := &runStartConfig{
 			Config: baseConfig,
 
 			AutoApply:            viper.GetBool("auto-apply"),
@@ -33,7 +33,7 @@ var destroyRunCmd = &cobra.Command{
 			Workspace:            viper.GetString("workspace"),
 		}
 
-		return config.StartRun(DESTROY)
+		return config.startRun(DESTROY)
 	},
 }
 
