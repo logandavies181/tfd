@@ -19,7 +19,7 @@ var runStartCmd = &cobra.Command{
 			return err
 		}
 
-		config := &RunStartConfig{
+		config := &runStartConfig{
 			Config: baseConfig,
 
 			AutoApply:            viper.GetBool("auto-apply"),
@@ -34,7 +34,7 @@ var runStartCmd = &cobra.Command{
 			Workspace:            viper.GetString("workspace"),
 		}
 
-		return config.StartRun(CREATE)
+		return config.startRun(CREATE)
 	},
 }
 
@@ -53,7 +53,7 @@ func init() {
 	flags.AddWorkspaceFlag(runStartCmd)
 }
 
-type RunStartConfig struct {
+type runStartConfig struct {
 	config.Config
 
 	AutoApply            bool   `mapstructure:"auto-apply"`

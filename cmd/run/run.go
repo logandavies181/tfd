@@ -56,7 +56,7 @@ func FormatRunUrl(address, org, workspace, runId string) (string, error) {
 		runId), nil
 }
 
-func (cfg RunStartConfig) StartRun(runType int) error {
+func (cfg runStartConfig) startRun(runType int) error {
 	workspace, err := cfg.Client.Workspaces.Read(cfg.Ctx, cfg.Org, cfg.Workspace)
 	if err != nil {
 		return err

@@ -24,6 +24,10 @@ func MockClient() *tfe.Client {
 	}
 }
 
+type Applies interface {
+	tfe.Applies
+}
+
 type ConfigurationVersions interface {
 	tfe.ConfigurationVersions
 }

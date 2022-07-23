@@ -45,7 +45,10 @@ func TestWatchPlan(t *testing.T) {
 
 	gomock.InOrder(
 		m.EXPECT().
-			Read(gomock.Any(), gomock.Eq("plan-123")).
+			Read(
+				gomock.Any(),
+				gomock.Eq("plan-123"),
+			).
 			Return(
 				&tfe.Plan{
 					Status: "some status",
@@ -53,7 +56,10 @@ func TestWatchPlan(t *testing.T) {
 				nil,
 			),
 		m.EXPECT().
-			Read(gomock.Any(), gomock.Eq("plan-123")).
+			Read(
+				gomock.Any(),
+				gomock.Eq("plan-123"),
+			).
 			Return(
 				&tfe.Plan{
 					Status: tfe.PlanFinished,
@@ -65,7 +71,7 @@ func TestWatchPlan(t *testing.T) {
 	cfg := mocks.MockConfig()
 	cfg.Client.Plans = m
 
-	pollingIntervalSeconds = 0
+	PollingIntervalSeconds = 0
 	err := WatchPlan(cfg.Ctx, cfg.Client, "plan-123")
 	assert.Nil(t, err)
 }
