@@ -48,8 +48,6 @@ go get github.com/logandavies181/tfd@latest
 
 Or check out [releases](https://github.com/logandavies181/tfd/releases)
 
-Mac/Windows builds can be added on request.
-
 ## Contributing
 
 Feel free to raise a PR or create an issue
