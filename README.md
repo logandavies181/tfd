@@ -61,5 +61,4 @@ Ensure you have an up-to-date go compiler.
 Before raising a Pull Request, ensure the unit tests pass and that the mocks are up to date by running
 `generate_mocks.sh`
 
-To create a release, create a semver tag (e.g. v1.2.3) and run `release.sh <new_tag_version`. This will ensure the
-version gets added to the build and binaries are published to GitHub.
+To create a release, run `goreleaser release`
