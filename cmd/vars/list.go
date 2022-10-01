@@ -13,6 +13,10 @@ import (
 )
 
 var varsListCmd = &cobra.Command{
+	Use:          "list",
+	Aliases:      []string{"l"},
+	Short:        "List the variables for a workspace",
+	SilenceUsage: true,
 	RunE: func(cmd *cobra.Command, _ []string) error {
 		baseConfig, err := flags.InitializeCmd(cmd)
 		if err != nil {
@@ -70,7 +74,7 @@ func varsList(cfg varsListConfig) error {
 	}
 
 	for _, v := range wsVars {
-		fmt.Printf("%s: %s", v.Key, v.Value)
+		fmt.Printf("%s: %s\n", v.Key, v.Value)
 	}
 
 	return nil
