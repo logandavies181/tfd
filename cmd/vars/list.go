@@ -5,9 +5,7 @@ import (
 
 	"github.com/logandavies181/tfd/cmd/config"
 	"github.com/logandavies181/tfd/cmd/flags"
-	"github.com/logandavies181/tfd/pkg/pagination"
 
-	"github.com/hashicorp/go-tfe"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -46,29 +44,7 @@ type varsListConfig struct {
 }
 
 func varsList(cfg varsListConfig) error {
-	ws, err := cfg.Client.Workspaces.Read(cfg.Ctx, cfg.Org, cfg.Workspace)
-	if err != nil {
-		return err
-	}
-
-	var wsVars []*tfe.Variable
-	err = pagination.WithPagination(func(pg *tfe.Pagination) (bool, error) {
-		varsListResp, err := cfg.Client.Variables.List(cfg.Ctx, ws.ID, &tfe.VariableListOptions{
-			ListOptions: tfe.ListOptions{
-				PageNumber: pg.NextPage,
-			},
-		})
-		if err != nil {
-			return false, err
-		}
-		if varsListResp.Pagination != nil {
-			*pg = *varsListResp.Pagination
-		}
-
-		wsVars = append(wsVars, varsListResp.Items...)
-
-		return false, nil
-	})
+	wsVars, err := getAllVarsByWorkspaceName(cfg.Config, cfg.Workspace)
 	if err != nil {
 		return err
 	}

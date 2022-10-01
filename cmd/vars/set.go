@@ -71,7 +71,7 @@ func varsSet(cfg varsSetConfig) error {
 		return err
 	}
 
-	v, err := cfg.Client.Variables.Create(cfg.Ctx, ws.ID, tfe.VariableCreateOptions{
+	_, err = cfg.Client.Variables.Create(cfg.Ctx, ws.ID, tfe.VariableCreateOptions{
 		Category: categoryType(cfg.Category),
 		Description: &cfg.Description,
 		HCL: &cfg.Hcl,
@@ -87,7 +87,12 @@ func varsSet(cfg varsSetConfig) error {
 		return nil
 	}
 
-	_, err = cfg.Client.Variables.Update(cfg.Ctx, ws.ID, v.ID, tfe.VariableUpdateOptions{
+	wsVar, err := getVarByName(cfg.Config, cfg.Workspace, cfg.Key)
+	if err != nil {
+		return err
+	}
+
+	_, err = cfg.Client.Variables.Update(cfg.Ctx, ws.ID, wsVar.ID, tfe.VariableUpdateOptions{
 		Category: categoryType(cfg.Category),
 		Description: &cfg.Description,
 		HCL: &cfg.Hcl,
