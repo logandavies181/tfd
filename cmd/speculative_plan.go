@@ -28,8 +28,8 @@ var speculativePlanCmd = &cobra.Command{
 		config := speculativePlanConfig{
 			Config: baseConfig,
 
-			Path:           viper.GetString("path"),
-			Workspace:      viper.GetString("workspace"),
+			Path:      viper.GetString("path"),
+			Workspace: viper.GetString("workspace"),
 		}
 
 		return speculativePlan(config)
@@ -54,8 +54,8 @@ func init() {
 type speculativePlanConfig struct {
 	config.Config
 
-	Path           string
-	Workspace      string
+	Path      string
+	Workspace string
 
 	mockGit bool
 }

@@ -28,7 +28,7 @@ var listRunCmd = &cobra.Command{
 		config := &listRunConfig{
 			Config: baseConfig,
 
-			MaxItems: viper.GetInt("max-items"),
+			MaxItems:  viper.GetInt("max-items"),
 			Workspace: viper.GetString("workspace"),
 		}
 

@@ -83,7 +83,7 @@ func (cfg runStartConfig) startRun(runType int) error {
 	var vars []*tfe.RunVariable
 	for k, v := range cfg.Vars {
 		vars = append(vars, &tfe.RunVariable{
-			Key: k,
+			Key:   k,
 			Value: v,
 		})
 	}
@@ -91,16 +91,16 @@ func (cfg runStartConfig) startRun(runType int) error {
 	r, err := cfg.Client.Runs.Create(
 		cfg.Ctx,
 		tfe.RunCreateOptions{
-			AutoApply: &cfg.FireAndForget,
+			AutoApply:            &cfg.FireAndForget,
 			ConfigurationVersion: cv,
-			IsDestroy:    &isDestroy,
-			Message:      &cfg.Message,
-			Refresh:      &cfg.Refresh,
-			RefreshOnly:  &cfg.RefreshOnly,
-			ReplaceAddrs: cfg.Replace,
-			TargetAddrs:  cfg.Targets,
-			Variables:    vars,
-			Workspace:    workspace,
+			IsDestroy:            &isDestroy,
+			Message:              &cfg.Message,
+			Refresh:              &cfg.Refresh,
+			RefreshOnly:          &cfg.RefreshOnly,
+			ReplaceAddrs:         cfg.Replace,
+			TargetAddrs:          cfg.Targets,
+			Variables:            vars,
+			Workspace:            workspace,
 		},
 	)
 	if err != nil {

@@ -26,7 +26,7 @@ var cvListCmd = &cobra.Command{
 		config := cvListConfig{
 			Config: baseConfig,
 
-			MaxItems: viper.GetInt("max-items"),
+			MaxItems:  viper.GetInt("max-items"),
 			Workspace: viper.GetString("workspace"),
 		}
 

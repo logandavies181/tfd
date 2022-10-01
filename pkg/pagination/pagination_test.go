@@ -40,7 +40,7 @@ func TestPaginateExitEarly(t *testing.T) {
 	err := WithPagination(func(pg *tfe.Pagination) (bool, error) {
 		pg.NextPage++
 		pg.CurrentPage++
-		pg.TotalPages = expectedLoops+1
+		pg.TotalPages = expectedLoops + 1
 
 		count++
 		if count == 2 {
