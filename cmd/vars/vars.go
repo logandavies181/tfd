@@ -2,11 +2,14 @@ package vars
 
 import (
 	"fmt"
+	"os"
+	"strings"
 
 	"github.com/logandavies181/tfd/cmd/config"
 	"github.com/logandavies181/tfd/pkg/pagination"
 
 	"github.com/hashicorp/go-tfe"
+	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
 )
 
@@ -67,4 +70,74 @@ func getAllVarsByWorkspaceName(cfg config.Config, workspaceName string) ([]*tfe.
 	}
 
 	return wsVars, nil
+}
+
+func printVarsTable(vars []*tfe.Variable, verbose bool) {
+	table := tablewriter.NewWriter(os.Stdout)
+
+	table.SetAutoWrapText(false)
+	table.SetAlignment(tablewriter.ALIGN_LEFT)
+	table.SetCenterSeparator("")
+	table.SetColumnSeparator("")
+	table.SetRowSeparator("")
+	table.SetBorder(false)
+	table.SetTablePadding("\t")
+	table.SetNoWhiteSpace(true)
+
+	for _, v := range vars {
+		varString := formatVar(v, verbose)
+
+		// chuck v.Key at the front
+		cols := append([]string{v.Key}, strings.Split(varString, "\t")...)
+
+		table.Append(cols)
+	}
+
+	table.Render()
+}
+
+func formatVar(v *tfe.Variable, verbose bool) string {
+	if v == nil {
+		return ""
+	}
+
+	fields := []string{
+		v.Value,
+	}
+
+	if verbose {
+		fields = append(
+			fields,
+			formatDescription(v.Description),
+			formatIsHCL(v.HCL),
+			formatIsSensitive(v.Sensitive),
+			string(v.Category),
+		)
+	}
+
+	return strings.Join(fields, "\t")
+}
+
+func formatDescription(desc string) string {
+	if desc == "" {
+		return "no description"
+	}
+
+	return desc
+}
+
+func formatIsHCL(isHCL bool) string {
+	if isHCL {
+		return "hcl"
+	}
+
+	return "normal"
+}
+
+func formatIsSensitive(isSensitive bool) string {
+	if isSensitive {
+		return "sensitive"
+	}
+
+	return "not sensitive"
 }

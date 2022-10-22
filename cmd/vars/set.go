@@ -72,12 +72,12 @@ func varsSet(cfg varsSetConfig) error {
 	}
 
 	_, err = cfg.Client.Variables.Create(cfg.Ctx, ws.ID, tfe.VariableCreateOptions{
-		Category: categoryType(cfg.Category),
+		Category:    categoryType(cfg.Category),
 		Description: &cfg.Description,
-		HCL: &cfg.Hcl,
-		Key: &cfg.Key,
-		Sensitive: &cfg.Sensitive,
-		Value: &cfg.Value,
+		HCL:         &cfg.Hcl,
+		Key:         &cfg.Key,
+		Sensitive:   &cfg.Sensitive,
+		Value:       &cfg.Value,
 	})
 	if err != nil && !strings.Contains(err.Error(), "Key has already been taken") {
 		return err
@@ -93,12 +93,12 @@ func varsSet(cfg varsSetConfig) error {
 	}
 
 	_, err = cfg.Client.Variables.Update(cfg.Ctx, ws.ID, wsVar.ID, tfe.VariableUpdateOptions{
-		Category: categoryType(cfg.Category),
+		Category:    categoryType(cfg.Category),
 		Description: &cfg.Description,
-		HCL: &cfg.Hcl,
-		Key: &cfg.Key,
-		Sensitive: &cfg.Sensitive,
-		Value: &cfg.Value,
+		HCL:         &cfg.Hcl,
+		Key:         &cfg.Key,
+		Sensitive:   &cfg.Sensitive,
+		Value:       &cfg.Value,
 	})
 
 	return err

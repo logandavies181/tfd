@@ -22,7 +22,7 @@ func TestUnvalidatedFlags(t *testing.T) {
 	AddRefreshFlag(cmd)
 	AddRefreshOnlyFlag(cmd)
 	AddReplaceFlag(cmd)
-	AddTargetsFlag(cmd)
+	AddTargetFlag(cmd)
 	AddRunIdFlag(cmd)
 
 	err := validateFlags(testCommandName)

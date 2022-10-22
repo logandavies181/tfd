@@ -1,8 +1,6 @@
 package vars
 
 import (
-	"fmt"
-
 	"github.com/logandavies181/tfd/cmd/config"
 	"github.com/logandavies181/tfd/cmd/flags"
 
@@ -24,6 +22,7 @@ var varsListCmd = &cobra.Command{
 		config := varsListConfig{
 			Config: baseConfig,
 
+			Verbose:   viper.GetBool("verbose"),
 			Workspace: viper.GetString("workspace"),
 		}
 
@@ -34,12 +33,14 @@ var varsListCmd = &cobra.Command{
 func init() {
 	VarsCmd.AddCommand(varsListCmd)
 
+	flags.AddVerboseFlag(varsListCmd)
 	flags.AddWorkspaceFlag(varsListCmd)
 }
 
 type varsListConfig struct {
 	config.Config
 
+	Verbose   bool
 	Workspace string
 }
 
@@ -49,9 +50,7 @@ func varsList(cfg varsListConfig) error {
 		return err
 	}
 
-	for _, v := range wsVars {
-		fmt.Printf("%s: %s\n", v.Key, v.Value)
-	}
+	printVarsTable(wsVars, cfg.Verbose)
 
 	return nil
 }

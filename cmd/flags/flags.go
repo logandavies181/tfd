@@ -41,6 +41,14 @@ func AddFireAndForgetFlag(cmd *cobra.Command) {
 
 func AddKeyFlag(cmd *cobra.Command) {
 	cmd.Flags().StringP("key", "", "", "Variable key name")
+
+	addValidation(cmd.Name(), func() error {
+		if viper.GetString("key") == "" {
+			return fmt.Errorf("Key flag must be set")
+		}
+
+		return nil
+	})
 }
 
 func AddHclFlag(cmd *cobra.Command) {
@@ -96,6 +104,10 @@ func AddValueFlag(cmd *cobra.Command) {
 func AddVarFlag(cmd *cobra.Command) {
 	cmd.Flags().StringToStringP("var", "", make(map[string]string),
 		"EXPERIMENTAL: Sets variables for the current run, taking precedence over those set on the workspace. Can be specified many times")
+}
+
+func AddVerboseFlag(cmd *cobra.Command) {
+	cmd.Flags().BoolP("verbose", "", false, "Print verbose output")
 }
 
 func AddWatchFlag(cmd *cobra.Command) {
