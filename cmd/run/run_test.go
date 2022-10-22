@@ -22,7 +22,7 @@ func TestGetCurrentRun(t *testing.T) {
 		ID:               "ws-1234",
 		WorkingDirectory: "workingDir",
 		CurrentRun: &tfe.Run{
-			ID: "run-1234",
+			ID:     "run-1234",
 			Status: "not_finished",
 		},
 	}
@@ -50,9 +50,9 @@ func TestGetCurrentRun(t *testing.T) {
 
 func TestFormatResourceChanges(t *testing.T) {
 	input := &tfe.Apply{
-		ResourceAdditions: 0,
+		ResourceAdditions:    0,
 		ResourceDestructions: 1,
-		ResourceChanges: 2,
+		ResourceChanges:      2,
 	}
 
 	output := formatResourceChanges(input)
@@ -85,13 +85,13 @@ func TestStartRun(t *testing.T) {
 		ID:               "ws-1234",
 		WorkingDirectory: "workingDir",
 		CurrentRun: &tfe.Run{
-			ID: "run-1234",
+			ID:     "run-1234",
 			Status: "not_finished",
 		},
 	}
 
 	ws := &tfe.Workspace{
-		ID: "ws-1234",
+		ID:   "ws-1234",
 		Name: "testWS",
 	}
 	cv := &tfe.ConfigurationVersion{}
@@ -123,15 +123,15 @@ func TestStartRun(t *testing.T) {
 			Create(
 				gomock.Any(),
 				gomock.Eq(tfe.RunCreateOptions{
-					AutoApply: &fals,
+					AutoApply:            &fals,
 					ConfigurationVersion: cv,
-					IsDestroy: &fals,
-					Message: &message,
-					Refresh: &fals,
-					RefreshOnly: &fals,
-					ReplaceAddrs: []string{},
-					TargetAddrs: []string{},
-					Workspace: ws,
+					IsDestroy:            &fals,
+					Message:              &message,
+					Refresh:              &fals,
+					RefreshOnly:          &fals,
+					ReplaceAddrs:         []string{},
+					TargetAddrs:          []string{},
+					Workspace:            ws,
 				}),
 			).
 			Return(
@@ -220,7 +220,7 @@ func TestStartRun(t *testing.T) {
 			).
 			Return(
 				&tfe.Run{
-					Status: tfe.RunPolicyChecking,
+					Status:  tfe.RunPolicyChecking,
 					Actions: &tfe.RunActions{},
 				},
 				nil,
@@ -304,7 +304,7 @@ func TestStartRun(t *testing.T) {
 			).
 			Return(
 				&tfe.Run{
-					ID: "run-1234",
+					ID:     "run-1234",
 					Status: tfe.RunApplied,
 					Apply: &tfe.Apply{
 						ID: "apply-1234",
@@ -319,9 +319,9 @@ func TestStartRun(t *testing.T) {
 			).
 			Return(
 				&tfe.Apply{
-					ResourceAdditions: 1,
+					ResourceAdditions:    1,
 					ResourceDestructions: 1,
-					ResourceChanges: 1,
+					ResourceChanges:      1,
 				},
 				nil,
 			),
@@ -336,18 +336,18 @@ func TestStartRun(t *testing.T) {
 	cfg.Client.ConfigurationVersions = cvsMock
 
 	c := &runStartConfig{
-		Config: cfg,
-		AutoApply: true,
+		Config:               cfg,
+		AutoApply:            true,
 		ConfigurationVersion: "cv-1234",
-		FireAndForget: false,
-		Message: "hello, world",
-		Refresh: false,
-		RefreshOnly: false,
-		Replace: []string{},
-		Targets: []string{},
-		Vars:    make(map[string]string),
-		Watch: false,
-		Workspace: "testWS",
+		FireAndForget:        false,
+		Message:              "hello, world",
+		Refresh:              false,
+		RefreshOnly:          false,
+		Replace:              []string{},
+		Targets:              []string{},
+		Vars:                 make(map[string]string),
+		Watch:                false,
+		Workspace:            "testWS",
 	}
 
 	err := c.startRun(CREATE)

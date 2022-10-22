@@ -11,13 +11,48 @@ func AddAutoApplyFlag(cmd *cobra.Command) {
 	cmd.Flags().BoolP("auto-apply", "a", false, "Automatically apply the plan once finished")
 }
 
+func AddCategoryFlag(cmd *cobra.Command) {
+	cmd.Flags().StringP("category", "", "", `Variable category. Acceptable values are "env", "policy-set", and "terraform"`)
+
+	addValidation(cmd.Name(), func() error {
+		switch cat := viper.GetString("category"); cat {
+		case "env", "policy-set", "terraform":
+		case "":
+			viper.Set("category", "terraform")
+		default:
+			return fmt.Errorf(`Category must be one of: "env", "policy-set", or "terraform"`)
+		}
+		return nil
+	})
+}
+
 func AddConfigurationVersionFlag(cmd *cobra.Command) {
 	cmd.Flags().StringP("configuration-version", "", "", "Configuration version to create a run against")
+}
+
+func AddDescriptionFlag(cmd *cobra.Command) {
+	cmd.Flags().StringP("description", "", "", "Description")
 }
 
 func AddFireAndForgetFlag(cmd *cobra.Command) {
 	cmd.Flags().BoolP("fire-and-forget", "f", false,
 		"Non-interactively apply the plan once finished. Warning: this will still auto apply even if tfd exits. Use --auto-apply instead for safety")
+}
+
+func AddKeyFlag(cmd *cobra.Command) {
+	cmd.Flags().StringP("key", "", "", "Variable key name")
+
+	addValidation(cmd.Name(), func() error {
+		if viper.GetString("key") == "" {
+			return fmt.Errorf("Key flag must be set")
+		}
+
+		return nil
+	})
+}
+
+func AddHclFlag(cmd *cobra.Command) {
+	cmd.Flags().BoolP("hcl", "", false, "Declare an HCL type variable")
 }
 
 func AddMaxItemsFlag(cmd *cobra.Command) {
@@ -26,6 +61,10 @@ func AddMaxItemsFlag(cmd *cobra.Command) {
 
 func AddMessageFlag(cmd *cobra.Command) {
 	cmd.Flags().StringP("message", "m", "", "Specifies the reason for the current action")
+}
+
+func AddNoClobberFlag(cmd *cobra.Command) {
+	cmd.Flags().BoolP("no-clobber", "", false, "Don't override existing")
 }
 
 func AddPathFlag(cmd *cobra.Command) {
@@ -49,9 +88,17 @@ func AddRunIdFlag(cmd *cobra.Command) {
 	cmd.Flags().StringP("run-id", "r", "", "Run ID to read")
 }
 
+func AddSensitiveFlag(cmd *cobra.Command) {
+	cmd.Flags().BoolP("sensitive", "", false, "Whether or not this is a sensitive variable")
+}
+
 func AddTargetFlag(cmd *cobra.Command) {
 	cmd.Flags().StringSliceP("target", "", []string{},
 		"EXPERIMENTAL: Specifies the list of target addresses to use for the run. Not recommended for regular use. Can be specified many times")
+}
+
+func AddValueFlag(cmd *cobra.Command) {
+	cmd.Flags().StringP("value", "", "", "Variable value")
 }
 
 func AddVarFlag(cmd *cobra.Command) {
@@ -59,12 +106,16 @@ func AddVarFlag(cmd *cobra.Command) {
 		"EXPERIMENTAL: Sets variables for the current run, taking precedence over those set on the workspace. Can be specified many times")
 }
 
+func AddVerboseFlag(cmd *cobra.Command) {
+	cmd.Flags().BoolP("verbose", "", false, "Print verbose output")
+}
+
 func AddWatchFlag(cmd *cobra.Command) {
 	cmd.Flags().BoolP("watch", "", false, "Wait for the run/plan to finish")
 }
 
 func AddWorkspaceFlag(cmd *cobra.Command) {
-	cmd.Flags().StringP("workspace", "w", "", "Terraform Cloud workspace to upload to")
+	cmd.Flags().StringP("workspace", "w", "", "Terraform Cloud workspace to interact with")
 
 	addValidation(cmd.Name(), func() error {
 		if viper.GetString("workspace") == "" {

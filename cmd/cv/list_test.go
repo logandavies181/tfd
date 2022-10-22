@@ -41,8 +41,8 @@ func TestCvList(t *testing.T) {
 				&tfe.ConfigurationVersionList{
 					Pagination: &tfe.Pagination{
 						CurrentPage: 0,
-						NextPage: 1,
-						TotalPages: 2,
+						NextPage:    1,
+						TotalPages:  2,
 					},
 					Items: []*tfe.ConfigurationVersion{
 						{
@@ -65,8 +65,8 @@ func TestCvList(t *testing.T) {
 				&tfe.ConfigurationVersionList{
 					Pagination: &tfe.Pagination{
 						CurrentPage: 1,
-						NextPage: 1,
-						TotalPages: 1,
+						NextPage:    1,
+						TotalPages:  1,
 					},
 					Items: []*tfe.ConfigurationVersion{
 						{
@@ -88,7 +88,7 @@ func TestCvList(t *testing.T) {
 	cvlCfg := cvListConfig{
 		Config: cfg,
 
-		MaxItems: 3,
+		MaxItems:  3,
 		Workspace: "test-ws",
 	}
 

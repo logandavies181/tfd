@@ -152,7 +152,7 @@ func isRunFinished(r *tfe.Run) bool {
 
 func isRunWaitingBetweenPlanAndApplying(r *tfe.Run) bool {
 	switch r.Status {
-		// some of these might not be correct
+	// some of these might not be correct
 	case tfe.RunConfirmed,
 		tfe.RunCostEstimated,
 		tfe.RunCostEstimating,

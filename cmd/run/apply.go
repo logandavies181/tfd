@@ -22,7 +22,7 @@ var applyRunCmd = &cobra.Command{
 			return err
 		}
 
-		config := &applyRunConfig{
+		config := applyRunConfig{
 			Config: baseConfig,
 
 			Watch:     viper.GetBool("watch"),
@@ -49,7 +49,7 @@ type applyRunConfig struct {
 	Workspace string
 }
 
-func applyRun(cfg *applyRunConfig) error {
+func applyRun(cfg applyRunConfig) error {
 	workspace, err := cfg.Client.Workspaces.Read(cfg.Ctx, cfg.Org, cfg.Workspace)
 	if err != nil {
 		return err

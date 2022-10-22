@@ -102,10 +102,10 @@ func TestSpeculativePlan(t *testing.T) {
 	cfg.Client.Plans = plansMock
 
 	speculativePlanConfig := speculativePlanConfig{
-		Config:         cfg,
-		Path:           "",
-		Workspace:      "testWS",
-		mockGit:        true,
+		Config:    cfg,
+		Path:      "",
+		Workspace: "testWS",
+		mockGit:   true,
 	}
 
 	err := speculativePlan(speculativePlanConfig)

@@ -6,6 +6,7 @@ import (
 
 	"github.com/logandavies181/tfd/cmd/cv"
 	"github.com/logandavies181/tfd/cmd/run"
+	"github.com/logandavies181/tfd/cmd/vars"
 
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
@@ -42,6 +43,7 @@ func init() {
 
 	rootCmd.AddCommand(cv.CvCmd)
 	rootCmd.AddCommand(run.RunCmd)
+	rootCmd.AddCommand(vars.VarsCmd)
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.tfd.yaml)")
 

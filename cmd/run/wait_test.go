@@ -23,7 +23,7 @@ func TestWaitForQueueStatus(t *testing.T) {
 		ID:               "ws-1234",
 		WorkingDirectory: "workingDir",
 		CurrentRun: &tfe.Run{
-			ID: "run-1234",
+			ID:     "run-1234",
 			Status: "not_finished",
 		},
 	}
@@ -70,7 +70,7 @@ func TestWaitForQueueStatusErrorNotCurrentRun(t *testing.T) {
 		ID:               "ws-1234",
 		WorkingDirectory: "workingDir",
 		CurrentRun: &tfe.Run{
-			ID: "run-1234",
+			ID:     "run-1234",
 			Status: "not_finished",
 		},
 	}
@@ -206,7 +206,7 @@ func TestWatchAndAutoApplyRun(t *testing.T) {
 		ID:               "ws-1234",
 		WorkingDirectory: "workingDir",
 		CurrentRun: &tfe.Run{
-			ID: "run-1234",
+			ID:     "run-1234",
 			Status: "not_finished",
 		},
 	}
@@ -298,7 +298,7 @@ func TestWatchAndAutoApplyRun(t *testing.T) {
 			).
 			Return(
 				&tfe.Run{
-					Status: tfe.RunPolicyChecking,
+					Status:  tfe.RunPolicyChecking,
 					Actions: &tfe.RunActions{},
 				},
 				nil,
@@ -386,7 +386,7 @@ func TestWatchAndAutoApplyRun(t *testing.T) {
 			).
 			Return(
 				&tfe.Run{
-					ID: "run-1234",
+					ID:     "run-1234",
 					Status: tfe.RunApplied,
 					Apply: &tfe.Apply{
 						ID: "apply-1234",
@@ -401,9 +401,9 @@ func TestWatchAndAutoApplyRun(t *testing.T) {
 			).
 			Return(
 				&tfe.Apply{
-					ResourceAdditions: 1,
+					ResourceAdditions:    1,
 					ResourceDestructions: 1,
-					ResourceChanges: 1,
+					ResourceChanges:      1,
 				},
 				nil,
 			),
