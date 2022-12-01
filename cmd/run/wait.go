@@ -70,7 +70,7 @@ func watchAndAutoApplyRun(ctx context.Context, client *tfe.Client, org, workspac
 			}
 
 			if isRunFinished(r) {
-				if r.Status == tfe.RunErrored {
+				if isWatchedRunFailed(r) {
 					return fmt.Errorf("Run errored")
 				}
 				fmt.Printf("Run %s finished with status: %s\n", r.ID, r.Status)
@@ -81,6 +81,10 @@ func watchAndAutoApplyRun(ctx context.Context, client *tfe.Client, org, workspac
 					return err
 				}
 			} else if isRunWaitingBetweenPlanAndApplying(r) {
+				if r.Status == tfe.RunPolicySoftFailed {
+					return fmt.Errorf("The run has failed policy checks")
+				}
+
 				// spin again
 				continue
 			} else {
@@ -126,13 +130,26 @@ func watchRun(ctx context.Context, client *tfe.Client, runId string) error {
 		}
 
 		if isRunFinished(r) {
-			if r.Status == tfe.RunErrored {
+			if isWatchedRunFailed(r) {
 				return fmt.Errorf("Run errored")
 			}
 			return nil
 		} else {
 			time.Sleep(PollingIntervalSeconds)
 		}
+	}
+}
+
+// isWatchedRunFailed returns true if the run has not completed for any reason
+func isWatchedRunFailed(r *tfe.Run) bool {
+	switch r.Status {
+	case tfe.RunCanceled,
+		tfe.RunDiscarded,
+		tfe.RunErrored:
+
+		return true
+	default:
+		return false
 	}
 }
 
