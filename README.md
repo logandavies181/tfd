@@ -43,7 +43,7 @@ command-line options. Environment variables are prefixed with "TFD_"
 ## Install
 
 ```sh
-go get github.com/logandavies181/tfd/v2@latest
+go install github.com/logandavies181/tfd/v2@latest
 ```
 
 Or check out [releases](https://github.com/logandavies181/tfd/v2/releases)
