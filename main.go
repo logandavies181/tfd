@@ -6,7 +6,7 @@ import (
 	"runtime/debug"
 	"strings"
 
-	"github.com/logandavies181/tfd/cmd"
+	"github.com/logandavies181/tfd/v2/cmd"
 )
 
 var version string

@@ -5,8 +5,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/logandavies181/tfd/cmd/config"
-	"github.com/logandavies181/tfd/pkg/pagination"
+	"github.com/logandavies181/tfd/v2/cmd/config"
+	"github.com/logandavies181/tfd/v2/pkg/pagination"
 
 	"github.com/hashicorp/go-tfe"
 	"github.com/olekukonko/tablewriter"

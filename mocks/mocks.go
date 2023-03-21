@@ -3,7 +3,7 @@ package mocks
 import (
 	"os"
 
-	"github.com/logandavies181/tfd/cmd/config"
+	"github.com/logandavies181/tfd/v2/cmd/config"
 
 	"github.com/hashicorp/go-tfe"
 )

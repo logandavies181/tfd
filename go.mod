@@ -1,4 +1,4 @@
-module github.com/logandavies181/tfd
+module github.com/logandavies181/tfd/v2
 
 go 1.19
 
