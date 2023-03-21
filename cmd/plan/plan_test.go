@@ -3,7 +3,7 @@ package plan
 import (
 	"testing"
 
-	"github.com/logandavies181/tfd/mocks"
+	"github.com/logandavies181/tfd/v2/mocks"
 
 	"github.com/golang/mock/gomock"
 	"github.com/hashicorp/go-tfe"

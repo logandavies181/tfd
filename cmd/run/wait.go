@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/logandavies181/tfd/cmd/plan"
+	"github.com/logandavies181/tfd/v2/cmd/plan"
 
 	"github.com/hashicorp/go-tfe"
 )

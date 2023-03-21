@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/logandavies181/tfd/cmd/cv"
-	"github.com/logandavies181/tfd/cmd/run"
-	"github.com/logandavies181/tfd/cmd/vars"
+	"github.com/logandavies181/tfd/v2/cmd/cv"
+	"github.com/logandavies181/tfd/v2/cmd/run"
+	"github.com/logandavies181/tfd/v2/cmd/vars"
 
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"

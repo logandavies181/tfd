@@ -3,9 +3,9 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/logandavies181/tfd/cmd/config"
-	"github.com/logandavies181/tfd/cmd/flags"
-	"github.com/logandavies181/tfd/pkg/git"
+	"github.com/logandavies181/tfd/v2/cmd/config"
+	"github.com/logandavies181/tfd/v2/cmd/flags"
+	"github.com/logandavies181/tfd/v2/pkg/git"
 
 	"github.com/hashicorp/go-tfe"
 	"github.com/spf13/cobra"
