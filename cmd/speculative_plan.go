@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/logandavies181/tfd/v2/cmd/config"
 	"github.com/logandavies181/tfd/v2/cmd/flags"
@@ -32,7 +33,10 @@ var speculativePlanCmd = &cobra.Command{
 			Workspace: viper.GetString("workspace"),
 		}
 
-		return speculativePlan(config)
+		err = speculativePlan(config)
+		if err != nil {
+			os.exit(1)
+		}
 	},
 }
 
