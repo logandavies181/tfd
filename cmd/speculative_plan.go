@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/logandavies181/tfd/v2/cmd/config"
 	"github.com/logandavies181/tfd/v2/cmd/flags"
