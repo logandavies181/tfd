@@ -32,7 +32,10 @@ var speculativePlanCmd = &cobra.Command{
 			Workspace: viper.GetString("workspace"),
 		}
 
-		return speculativePlan(config)
+		err = speculativePlan(config)
+		if err != nil {
+			os.exit(1)
+		}
 	},
 }
 
