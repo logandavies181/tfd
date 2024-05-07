@@ -1,7 +1,6 @@
 package run
 
 import (
-	"context"
 	"fmt"
 	"sort"
 
@@ -104,19 +103,4 @@ func (rts RunTimeSorter) Swap(i, j int) {
 
 func sortRunsByCreateTime(runs []*tfe.Run) {
 	sort.Sort(RunTimeSorter(runs))
-}
-
-func getConfirmableRunByWorkspaceId(client *tfe.Client, ctx context.Context, workspaceId string) (string, error) {
-	runList, err := client.Runs.List(ctx, workspaceId, &tfe.RunListOptions{})
-	if err != nil {
-		return "", err
-	}
-
-	for _, r := range runList.Items {
-		if r.Actions.IsConfirmable {
-			return r.ID, nil
-		}
-	}
-
-	return "", fmt.Errorf("No confirmable Runs on workspace %s", workspaceId)
 }

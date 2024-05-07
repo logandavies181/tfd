@@ -4,7 +4,6 @@ import (
 	"github.com/logandavies181/tfd/v2/cmd/config"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 var (
@@ -31,8 +30,6 @@ func addValidation(name string, validationFunc func() error) {
 }
 
 func InitializeCmd(cmd *cobra.Command) (conf config.Config, err error) {
-	viper.BindPFlags(cmd.Flags())
-
 	conf, err = config.New()
 	if err != nil {
 		return

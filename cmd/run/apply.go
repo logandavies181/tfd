@@ -38,8 +38,6 @@ func init() {
 
 	flags.AddWatchFlag(applyRunCmd)
 	flags.AddWorkspaceFlag(applyRunCmd)
-
-	viper.BindPFlags(applyRunCmd.Flags())
 }
 
 type applyRunConfig struct {

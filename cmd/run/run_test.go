@@ -6,9 +6,9 @@ import (
 	"github.com/logandavies181/tfd/v2/cmd/plan"
 	"github.com/logandavies181/tfd/v2/mocks"
 
-	"github.com/golang/mock/gomock"
 	"github.com/hashicorp/go-tfe"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 func TestGetCurrentRun(t *testing.T) {
