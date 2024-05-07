@@ -51,7 +51,9 @@ func init() {
 	rootCmd.PersistentFlags().StringP("token", "t", "", "Token to use to authenticate to Terraform Cloud")
 	rootCmd.PersistentFlags().StringP("address", "", defaultTerraformCloudURI, "Full Terraform Cloud/Enterprise API URI")
 
-	viper.BindPFlags(rootCmd.PersistentFlags())
+	if err := viper.BindPFlags(rootCmd.PersistentFlags()); err != nil {
+		panic(err)
+	}
 }
 
 func initConfig() {

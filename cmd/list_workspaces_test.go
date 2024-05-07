@@ -5,7 +5,7 @@ import (
 
 	"github.com/logandavies181/tfd/v2/mocks"
 
-	"github.com/golang/mock/gomock"
+	"go.uber.org/mock/gomock"
 	"github.com/hashicorp/go-tfe"
 	"github.com/stretchr/testify/assert"
 )
