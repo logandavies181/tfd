@@ -5,9 +5,9 @@ import (
 
 	"github.com/logandavies181/tfd/v2/mocks"
 
-	"go.uber.org/mock/gomock"
 	"github.com/hashicorp/go-tfe"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 func TestFormatResourceChanges(t *testing.T) {

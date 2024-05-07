@@ -7,7 +7,7 @@ set shell := ["/usr/bin/env", "bash", "-c"]
     go test ./...
 
 @fmt:
-    go fmt
+    go fmt ./...
 
 @mocks:
     ./generate_mocks.sh
