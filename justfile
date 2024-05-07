@@ -4,7 +4,7 @@ set shell := ["/usr/bin/env", "bash", "-c"]
     go build
 
 @test:
-    go test
+    go test ./...
 
 @fmt:
     go fmt
