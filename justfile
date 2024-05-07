@@ -20,8 +20,7 @@ set shell := ["/usr/bin/env", "bash", "-c"]
 # Run before merging PR
 @checks: fmt mocks test lint
     # Fail if files not up-to-date (particularly mocks)
-    [[ $(git diff --name-only | wc --lines) -lt 1 ]] || \
-        echo "Uncommitted files found" && exit 1
+    ([[ $(git diff --name-only | wc --lines) -lt 1 ]] || echo "Uncommitted files found") && exit 1
 
 # Requires a git tag first
 @release: checks
