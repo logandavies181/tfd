@@ -1,5 +1,7 @@
 # tfd
 
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/8898/badge)](https://www.bestpractices.dev/projects/8898)
+
 Terraform Developer tool for interacting with Terraform Cloud and Terraform Enterprise
 
 ## Usage
