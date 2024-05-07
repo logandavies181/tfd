@@ -1,6 +1,6 @@
 module github.com/logandavies181/tfd/v2
 
-go 1.19
+go 1.22
 
 require (
 	github.com/golang/mock v1.6.0
