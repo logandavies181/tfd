@@ -3,3 +3,5 @@ tfd
 *.tgz
 
 dist/
+
+.terraform
