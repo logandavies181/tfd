@@ -26,6 +26,7 @@ var uploadConfigCmd = &cobra.Command{
 		config := &uploadConfigConfig{
 			Config: baseConfig,
 
+			RootPath:  viper.GetString("rootpath"),
 			Path:      viper.GetString("path"),
 			Workspace: viper.GetString("workspace"),
 		}
@@ -37,13 +38,14 @@ var uploadConfigCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(uploadConfigCmd)
 
-	flags.AddPathFlag(uploadConfigCmd)
+	flags.AddRootPathFlag(uploadConfigCmd)
 	flags.AddWorkspaceFlag(uploadConfigCmd)
 }
 
 type uploadConfigConfig struct {
 	config.Config
 
+	RootPath  string
 	Path      string
 	Workspace string
 }
@@ -63,11 +65,16 @@ func uploadConfig(cfg *uploadConfigConfig) error {
 		return err
 	}
 
-	pathToRoot, _, err := git.GetRootOfRepo(cfg.Path)
-	if err != nil {
-		return err
-	}
+	var pathToRoot string
+	if cfg.RootPath != "" {
+		pathToRoot = cfg.RootPath
+	} else {
+		pathToRoot, _, err = git.GetRootOfRepo(cfg.Path)
 
+		if err != nil {
+			return err
+		}
+	}
 	err = cfg.Client.ConfigurationVersions.Upload(cfg.Ctx, cv.UploadURL, pathToRoot)
 	if err != nil {
 		return err
