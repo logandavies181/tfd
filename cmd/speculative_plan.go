@@ -125,7 +125,7 @@ func speculativePlan(cfg speculativePlanConfig) error {
 	if planError == nil {
 		fmt.Println(plan.FormatResourceChanges(runPlan))
 	} else {
-		fmt.Println(planError)
+		fmt.Println(planError.Error())
 	}
 
 	return nil
