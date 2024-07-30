@@ -89,7 +89,6 @@ func speculativePlan(cfg speculativePlanConfig) error {
 		}
 	}
 
-	fmt.Println("[debug] speculative plan, root path:", pathToRoot)
 	err = cfg.Client.ConfigurationVersions.Upload(cfg.Ctx, cv.UploadURL, pathToRoot)
 	if err != nil {
 		return err

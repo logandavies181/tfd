@@ -1,8 +1,8 @@
 package flags
 
 import (
+	"errors"
 	"fmt"
-	"github.com/pkg/errors"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -83,7 +83,7 @@ func AddRootPathFlag(cmd *cobra.Command) {
 		}
 		stat, err := os.Stat(rootPath)
 		if err != nil {
-			return errors.Wrapf(err, "tfd: error accessing rootPath")
+			return fmt.Errorf("error accessing rootPath: %w", err)
 		}
 		if !stat.IsDir() {
 			return errors.Errorf("tfd: rootPath '%s' is not a directory", rootPath)

@@ -19,8 +19,8 @@ tfd list-workspaces
 # Upload local git repo to Terraform Cloud
 tfd upload-config --path /path/to/project --workspace myworkspace
 
-# Upload local root folder to Terraform Cloud
-tfd upload-config --root-path /path/to/root --path /path/to/root/path/to/project --workspace myworkspace
+# Upload non-git folder to Terraform Cloud or override git root
+tfd upload-config --root-path /path/to/root --workspace myworkspace
 
 # Start a run
 tfd run start --workspace myworkspace
