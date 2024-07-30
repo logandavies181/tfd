@@ -86,7 +86,7 @@ func AddRootPathFlag(cmd *cobra.Command) {
 			return fmt.Errorf("error accessing rootPath: %w", err)
 		}
 		if !stat.IsDir() {
-			return errors.Errorf("tfd: rootPath '%s' is not a directory", rootPath)
+			return fmt.Errorf("tfd: rootPath '%s' is not a directory", rootPath)
 		}
 		return nil
 	})
