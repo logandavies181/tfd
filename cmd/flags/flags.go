@@ -12,6 +12,10 @@ func AddAutoApplyFlag(cmd *cobra.Command) {
 	cmd.Flags().BoolP("auto-apply", "a", false, "Automatically apply the plan once finished")
 }
 
+func AddAutoQueueFlag(cmd *cobra.Command) {
+	cmd.Flags().BoolP("auto-queue", "", false, "Automatically apply queue a run once uploaded")
+}
+
 func AddCategoryFlag(cmd *cobra.Command) {
 	cmd.Flags().StringP("category", "", "", `Variable category. Acceptable values are "env", "policy-set", and "terraform"`)
 
