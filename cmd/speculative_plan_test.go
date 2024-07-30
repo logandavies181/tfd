@@ -62,7 +62,7 @@ func TestSpeculativePlan(t *testing.T) {
 			Upload(
 				gomock.Any(),
 				"http://foobar.example.com",
-				"pathToRoot", // manually mocked inside speculativePlan function
+				"pathToRoot",
 			).
 			Return(nil),
 		runsMock.EXPECT().
@@ -103,6 +103,7 @@ func TestSpeculativePlan(t *testing.T) {
 
 	speculativePlanConfig := speculativePlanConfig{
 		Config:    cfg,
+		RootPath:  "pathToRoot",
 		Path:      "",
 		Workspace: "testWS",
 		mockGit:   true,

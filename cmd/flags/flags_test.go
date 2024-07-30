@@ -16,6 +16,7 @@ func TestUnvalidatedFlags(t *testing.T) {
 		Use: testCommandName,
 	}
 	AddPathFlag(cmd)
+	AddRootPathFlag(cmd)
 	AddAutoApplyFlag(cmd)
 	AddMessageFlag(cmd)
 	AddWatchFlag(cmd)

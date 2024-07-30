@@ -2,6 +2,7 @@ package flags
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -68,7 +69,26 @@ func AddNoClobberFlag(cmd *cobra.Command) {
 }
 
 func AddPathFlag(cmd *cobra.Command) {
-	cmd.Flags().StringP("path", "p", "", "Path to project. Can be any subdirectory of the project, but it must be a git project")
+	cmd.Flags().StringP("path", "p", "", "Path to project. Can be any subdirectory of the workspace root")
+}
+
+func AddRootPathFlag(cmd *cobra.Command) {
+	cmd.Flags().StringP("rootpath", "", "", "Path to workspace root. Defaults to the folder detected by git as the workspace root")
+
+	addValidation(cmd.Name(), func() error {
+		rootPath := viper.GetString("rootpath")
+		if rootPath == "" {
+			return nil
+		}
+		stat, err := os.Stat(rootPath)
+		if err != nil {
+			return fmt.Errorf("error accessing rootPath: %w", err)
+		}
+		if !stat.IsDir() {
+			return fmt.Errorf("tfd: rootPath '%s' is not a directory", rootPath)
+		}
+		return nil
+	})
 }
 
 func AddRefreshFlag(cmd *cobra.Command) {

@@ -28,6 +28,7 @@ var speculativePlanCmd = &cobra.Command{
 		config := speculativePlanConfig{
 			Config: baseConfig,
 
+			RootPath:  viper.GetString("rootpath"),
 			Path:      viper.GetString("path"),
 			Workspace: viper.GetString("workspace"),
 		}
@@ -39,6 +40,7 @@ var speculativePlanCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(speculativePlanCmd)
 
+	flags.AddRootPathFlag(speculativePlanCmd)
 	flags.AddPathFlag(speculativePlanCmd)
 	flags.AddWorkspaceFlag(speculativePlanCmd)
 	flags.AddAutoApplyFlag(speculativePlanCmd)
@@ -54,6 +56,7 @@ func init() {
 type speculativePlanConfig struct {
 	config.Config
 
+	RootPath  string
 	Path      string
 	Workspace string
 
@@ -77,8 +80,8 @@ func speculativePlan(cfg speculativePlanConfig) error {
 		return err
 	}
 	var pathToRoot string
-	if cfg.mockGit {
-		pathToRoot = "pathToRoot"
+	if cfg.RootPath != "" {
+		pathToRoot = cfg.RootPath
 	} else {
 		pathToRoot, _, err = git.GetRootOfRepo(cfg.Path)
 		if err != nil {
