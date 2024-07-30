@@ -29,6 +29,7 @@ var uploadConfigCmd = &cobra.Command{
 			RootPath:  viper.GetString("rootpath"),
 			Path:      viper.GetString("path"),
 			Workspace: viper.GetString("workspace"),
+			AutoQueue: viper.GetBool("auto-queue"),
 		}
 
 		return uploadConfig(config)
@@ -39,7 +40,9 @@ func init() {
 	rootCmd.AddCommand(uploadConfigCmd)
 
 	flags.AddRootPathFlag(uploadConfigCmd)
+	flags.AddPathFlag(uploadConfigCmd)
 	flags.AddWorkspaceFlag(uploadConfigCmd)
+	flags.AddAutoQueueFlag(uploadConfigCmd)
 }
 
 type uploadConfigConfig struct {
@@ -48,6 +51,7 @@ type uploadConfigConfig struct {
 	RootPath  string
 	Path      string
 	Workspace string
+	AutoQueue bool
 }
 
 func uploadConfig(cfg *uploadConfigConfig) error {
@@ -60,7 +64,9 @@ func uploadConfig(cfg *uploadConfigConfig) error {
 	cv, err := cfg.Client.ConfigurationVersions.Create(
 		cfg.Ctx,
 		workspace.ID,
-		tfe.ConfigurationVersionCreateOptions{})
+		tfe.ConfigurationVersionCreateOptions{
+			AutoQueueRuns: &cfg.AutoQueue,
+		})
 	if err != nil {
 		return err
 	}
