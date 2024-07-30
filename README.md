@@ -20,7 +20,7 @@ tfd list-workspaces
 tfd upload-config --path /path/to/project --workspace myworkspace
 
 # Upload non-git folder to Terraform Cloud or override git root
-tfd upload-config --root-path /path/to/root --workspace myworkspace
+tfd upload-config --rootpath /path/to/root --workspace myworkspace
 
 # Start a run
 tfd run start --workspace myworkspace
