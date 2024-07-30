@@ -1,7 +1,6 @@
 package flags
 
 import (
-	"errors"
 	"fmt"
 	"os"
 
