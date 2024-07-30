@@ -13,7 +13,7 @@ func AddAutoApplyFlag(cmd *cobra.Command) {
 }
 
 func AddAutoQueueFlag(cmd *cobra.Command) {
-	cmd.Flags().BoolP("auto-queue", "", false, "Automatically apply queue a run once uploaded")
+	cmd.Flags().BoolP("auto-queue", "", false, "Automatically queue a run once uploaded")
 }
 
 func AddCategoryFlag(cmd *cobra.Command) {
