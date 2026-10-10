@@ -459,6 +459,21 @@ func (mr *MockRunsMockRecorder) List(ctx, workspaceID, options any) *gomock.Call
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockRuns)(nil).List), ctx, workspaceID, options)
 }
 
+// ListForOrganization mocks base method.
+func (m *MockRuns) ListForOrganization(ctx context.Context, organization string, options *tfe.RunListForOrganizationOptions) (*tfe.OrganizationRunList, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListForOrganization", ctx, organization, options)
+	ret0, _ := ret[0].(*tfe.OrganizationRunList)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListForOrganization indicates an expected call of ListForOrganization.
+func (mr *MockRunsMockRecorder) ListForOrganization(ctx, organization, options any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListForOrganization", reflect.TypeOf((*MockRuns)(nil).ListForOrganization), ctx, organization, options)
+}
+
 // Read mocks base method.
 func (m *MockRuns) Read(ctx context.Context, runID string) (*tfe.Run, error) {
 	m.ctrl.T.Helper()
@@ -526,6 +541,21 @@ func (mr *MockWorkspacesMockRecorder) AddRemoteStateConsumers(ctx, workspaceID, 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddRemoteStateConsumers", reflect.TypeOf((*MockWorkspaces)(nil).AddRemoteStateConsumers), ctx, workspaceID, options)
 }
 
+// AddTagBindings mocks base method.
+func (m *MockWorkspaces) AddTagBindings(ctx context.Context, workspaceID string, options tfe.WorkspaceAddTagBindingsOptions) ([]*tfe.TagBinding, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddTagBindings", ctx, workspaceID, options)
+	ret0, _ := ret[0].([]*tfe.TagBinding)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AddTagBindings indicates an expected call of AddTagBindings.
+func (mr *MockWorkspacesMockRecorder) AddTagBindings(ctx, workspaceID, options any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddTagBindings", reflect.TypeOf((*MockWorkspaces)(nil).AddTagBindings), ctx, workspaceID, options)
+}
+
 // AddTags mocks base method.
 func (m *MockWorkspaces) AddTags(ctx context.Context, workspaceID string, options tfe.WorkspaceAddTagsOptions) error {
 	m.ctrl.T.Helper()
@@ -582,6 +612,20 @@ func (m *MockWorkspaces) Delete(ctx context.Context, organization, workspace str
 func (mr *MockWorkspacesMockRecorder) Delete(ctx, organization, workspace any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockWorkspaces)(nil).Delete), ctx, organization, workspace)
+}
+
+// DeleteAllTagBindings mocks base method.
+func (m *MockWorkspaces) DeleteAllTagBindings(ctx context.Context, workspaceID string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteAllTagBindings", ctx, workspaceID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteAllTagBindings indicates an expected call of DeleteAllTagBindings.
+func (mr *MockWorkspacesMockRecorder) DeleteAllTagBindings(ctx, workspaceID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAllTagBindings", reflect.TypeOf((*MockWorkspaces)(nil).DeleteAllTagBindings), ctx, workspaceID)
 }
 
 // DeleteByID mocks base method.
@@ -642,6 +686,21 @@ func (mr *MockWorkspacesMockRecorder) List(ctx, organization, options any) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockWorkspaces)(nil).List), ctx, organization, options)
 }
 
+// ListEffectiveTagBindings mocks base method.
+func (m *MockWorkspaces) ListEffectiveTagBindings(ctx context.Context, workspaceID string) ([]*tfe.EffectiveTagBinding, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListEffectiveTagBindings", ctx, workspaceID)
+	ret0, _ := ret[0].([]*tfe.EffectiveTagBinding)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListEffectiveTagBindings indicates an expected call of ListEffectiveTagBindings.
+func (mr *MockWorkspacesMockRecorder) ListEffectiveTagBindings(ctx, workspaceID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListEffectiveTagBindings", reflect.TypeOf((*MockWorkspaces)(nil).ListEffectiveTagBindings), ctx, workspaceID)
+}
+
 // ListRemoteStateConsumers mocks base method.
 func (m *MockWorkspaces) ListRemoteStateConsumers(ctx context.Context, workspaceID string, options *tfe.RemoteStateConsumersListOptions) (*tfe.WorkspaceList, error) {
 	m.ctrl.T.Helper()
@@ -655,6 +714,21 @@ func (m *MockWorkspaces) ListRemoteStateConsumers(ctx context.Context, workspace
 func (mr *MockWorkspacesMockRecorder) ListRemoteStateConsumers(ctx, workspaceID, options any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRemoteStateConsumers", reflect.TypeOf((*MockWorkspaces)(nil).ListRemoteStateConsumers), ctx, workspaceID, options)
+}
+
+// ListTagBindings mocks base method.
+func (m *MockWorkspaces) ListTagBindings(ctx context.Context, workspaceID string) ([]*tfe.TagBinding, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListTagBindings", ctx, workspaceID)
+	ret0, _ := ret[0].([]*tfe.TagBinding)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListTagBindings indicates an expected call of ListTagBindings.
+func (mr *MockWorkspacesMockRecorder) ListTagBindings(ctx, workspaceID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListTagBindings", reflect.TypeOf((*MockWorkspaces)(nil).ListTagBindings), ctx, workspaceID)
 }
 
 // ListTags mocks base method.
